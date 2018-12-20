@@ -5,7 +5,7 @@ all: $(EXECUTABLE)
 $(EXECUTABLE): panelsoap.cpp panelsoap_functions.cpp
 	mkdir -p $(OUT_DIR)
 	soapcpp2 -x -SL -d$(OUT_DIR) -I/usr/share/gsoap/import panelsoap.h
-	g++ -D WITH_IPV6 -I. -I$(OUT_DIR) -o $@ $^ $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp -lgsoap++
+	g++ -g -D WITH_IPV6 -I. -I$(OUT_DIR) -o $@ $^ $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp -lgsoap++
 
 mrproper: clean
 clean:

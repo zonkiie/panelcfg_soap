@@ -1,6 +1,6 @@
-// hello.h
-#ifndef __hello__
-#define __hello__
+// panelsoap.h
+#ifndef __panelsoap__
+#define __panelsoap__
 
 #import "stlvector.h"
 

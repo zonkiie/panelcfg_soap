@@ -1,4 +1,5 @@
 #include <includes.h>
+#include <soap_includes.h>
 
 int main()
 {

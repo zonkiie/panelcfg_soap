@@ -2,8 +2,6 @@
 #define __includes__
 
 #include <stddef.h>
-#include <soapH.h>  // include the generated source code headers
-#include <ns.nsmap> // include XML namespaces
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
@@ -16,5 +14,7 @@
 #include <errno.h>
 #include <error.h>
 #include <sys/time.h>
+#include <vector>
+#include <list>
 
 #endif
