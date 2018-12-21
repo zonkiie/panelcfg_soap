@@ -1,5 +1,5 @@
 <?php
-$client = new SoapClient('http://localhost/~rainer/panelcfg_soap/ns.wsdl', array('location' => "http://localhost/~rainer/panelcfg_soap/panelsoap.cgi", "trace"=>true, 'cache_wsdl' => WSDL_CACHE_NONE, "login"=>"username1", "password"=>"password1"));
+$client = new SoapClient('http://localhost/~rainer/panelcfg_soap/ns.wsdl', array('location' => "http://localhost/~rainer/panelcfg_soap/panelsoap.cgi", "trace"=>true, 'cache_wsdl' => WSDL_CACHE_NONE, "login"=>"username1", "password"=>"password1", "authentication"=>SOAP_AUTHENTICATION_BASIC));
 var_dump($client->__getFunctions());
 //echo "Types:" . PHP_EOL;
 //var_dump($client->__getTypes());
