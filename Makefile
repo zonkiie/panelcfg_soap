@@ -4,8 +4,8 @@ EXECUTABLE := $(OUT_DIR)/panelsoap.cgi
 all: $(EXECUTABLE)
 $(EXECUTABLE): panelsoap.cpp panelsoap_functions.cpp
 	mkdir -p $(OUT_DIR)
-	soapcpp2 -x -SL -d$(OUT_DIR) -I/usr/share/gsoap/import panelsoap.h
-	g++ -g -std=c++11 -D WITH_IPV6 -I. -I$(OUT_DIR) -o $@ $^ $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp -lgsoap++
+	soapcpp2 -2 -b -x -SL -d$(OUT_DIR) -I/usr/share/gsoap/import panelsoap.h
+	g++ -Wall -g -std=c++11 -D WITH_IPV6 -I. -I$(OUT_DIR) -o $@ $^ $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp -lgsoap++
 
 mrproper: clean
 clean:
