@@ -18,4 +18,10 @@
 //gsoap ns2 service method-action:      getusers "" 
 int ns__getusers(std::vector<std::string>& userlist);
 
+//gsoap ns2 service method-protocol:    getusers SOAP 
+//gsoap ns2 service method-style:       getusers rpc 
+//gsoap ns2 service method-encoding:    getusers http://schemas.xmlsoap.org/soap/encoding/ 
+//gsoap ns2 service method-action:      getusers "" 
+int ns__authinfo(std::string& response);
+
 #endif

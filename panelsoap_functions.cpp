@@ -22,3 +22,9 @@ int ns__getusers(struct soap* soap, vector<string>& userlist)
 	ifs.close();
 	return SOAP_OK;
 }
+
+int ns__authinfo(struct soap* soap, string & response)
+{
+	response = "Username:" + (soap->userid != NULL?string(soap->userid):"(NULL)") + ", Password:" + (soap->passwd != NULL?string(soap->passwd):"(NULL)");
+	return SOAP_OK;
+}
