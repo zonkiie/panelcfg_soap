@@ -6,9 +6,9 @@ set_exception_handler(function($exception) {
 	print_r($exception);
 });
 
-$client = new SoapClient('http://localhost/~rainer/panelcfg_soap/ns.wsdl', 
+$client = new SoapClient('https://localhost/~rainer/panelcfg_soap/ns.wsdl', 
 	array(
-		'location' => "http://localhost/~rainer/panelcfg_soap/panelsoap.cgi",
+		'location' => "https://localhost/~rainer/panelcfg_soap/panelsoap.cgi",
 		'trace'=>true,
 		'cache_wsdl' => WSDL_CACHE_NONE,
 		'login'=>"username1",

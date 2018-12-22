@@ -28,11 +28,8 @@ int ns__soapinfo(struct soap* soap, string & response)
 	//response = "Username:" + (soap->userid != NULL?string(soap->userid):"(NULL)") + ", Password:" + (soap->passwd != NULL?string(soap->passwd):"(NULL)");
 	std::stringstream rstr;
 	rstr << "Soap_Info:";
-	if(soap->userid == NULL || soap->passwd == NULL)
-	{
-		soap->authrealm = "panelsoap";
-		return 401;
-	}
+	//if(soap->userid == NULL || soap->passwd == NULL) { soap->authrealm = "panelsoap"; return 401; }
+	
 	if(soap->userid != NULL) rstr << " Username:" << soap->userid;
 	if(soap->passwd != NULL) rstr << " Password:" << soap->passwd;
 	if(soap->proxy_userid != NULL) rstr << " proxy_userid:" << soap->proxy_userid;
