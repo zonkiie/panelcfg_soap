@@ -1,5 +1,11 @@
 <?php
 error_reporting(E_ALL);
+
+set_exception_handler(function($exception) {
+	echo "Exception:";
+	print_r($exception);
+});
+
 $client = new SoapClient('http://localhost/~rainer/panelcfg_soap/ns.wsdl', 
 	array(
 		'location' => "http://localhost/~rainer/panelcfg_soap/panelsoap.cgi",

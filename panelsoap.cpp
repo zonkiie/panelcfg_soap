@@ -3,6 +3,9 @@
 
 int main()
 {
-	return soap_serve(soap_new());
+	struct soap *soap = soap_new();
+	soap->authrealm = "panelsoap";
+	return soap_serve(soap);
+	//return soap_serve(soap_new());
 	//start_service();
 }
