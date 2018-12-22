@@ -2,7 +2,8 @@
 
 using namespace std;
 
-// https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
+/// @see https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
+/// @see http://www.martinbroadhurst.com/how-to-split-a-string-in-c.html
 int ns__getusers(struct soap* soap, vector<string>& userlist)
 {
 	ifstream ifs("/etc/passwd");
@@ -11,7 +12,8 @@ int ns__getusers(struct soap* soap, vector<string>& userlist)
 	while(getline(ifs, line))
 	{
 		vector<string> entries;
-		boost::split(entries, line, [](char c){return c == ':';});
+		//boost::split(entries, line, [](char c){return c == ':';});
+		boost::split(entries, line, boost::is_any_of(":"));
 		for(vector<string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
 			//cout << *j << endl;
 			userlist.push_back((*i));

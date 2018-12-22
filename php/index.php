@@ -24,8 +24,8 @@ $client = new SoapClient('https://localhost/~rainer/panelcfg_soap/ns.wsdl',
 //echo "Types:" . PHP_EOL;
 //var_dump($client->__getTypes());
 try{
-	//print_r($client->getusers());
-	print_r($client->soapinfo());
+	print_r($client->getusers());
+	//print_r($client->soapinfo());
 }
 catch(Exception $e)
 {
