@@ -6,9 +6,12 @@ set_exception_handler(function($exception) {
 	print_r($exception);
 });
 
-$client = new SoapClient('https://localhost/~rainer/panelcfg_soap/ns.wsdl', 
+#$base_url = 'https://localhost/~rainer/panelcfg_soap';
+$base_url = 'http://localhost:8080/';
+
+$client = new SoapClient($base_url . '/ns.wsdl', 
 	array(
-		'location' => "https://localhost/~rainer/panelcfg_soap/panelsoap.cgi",
+		'location' => $base_url . '/panelsoap.cgi',
 		'trace'=>true,
 		'cache_wsdl' => WSDL_CACHE_NONE,
 		'login'=>"username1",
@@ -25,7 +28,7 @@ $client = new SoapClient('https://localhost/~rainer/panelcfg_soap/ns.wsdl',
 //var_dump($client->__getTypes());
 try{
 	print_r($client->getusers());
-	//print_r($client->soapinfo());
+	print_r($client->soapinfo());
 }
 catch(Exception $e)
 {
