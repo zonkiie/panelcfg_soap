@@ -1,8 +1,6 @@
 #include <includes.h>
 #include <soap_includes.h>
 
-char *progpath;
-
 /*int main()
 {
 	struct soap *soap = soap_new();

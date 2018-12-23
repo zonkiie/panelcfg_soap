@@ -1,5 +1,7 @@
 #include <includes.h>
 
+char *progpath;
+
 /// @see https://stackoverflow.com/questions/35390912/proper-way-to-get-file-size-in-c
 int get_filesize(char * filename)
 {
