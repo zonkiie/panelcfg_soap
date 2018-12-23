@@ -1,6 +1,8 @@
 #include <includes.h>
 #include <soap_includes.h>
 
+char *progpath;
+
 /*int main()
 {
 	struct soap *soap = soap_new();
@@ -12,6 +14,7 @@
 
 int main(int argc, char **argv) 
 {
+  progpath = argv[0];
   struct soap soap; 
   soap_init(&soap);
   soap.authrealm = "panelsoap";
