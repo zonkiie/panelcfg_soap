@@ -25,5 +25,6 @@
 #include <soapH.h>  // include the generated source code headers
 
 extern char * progpath;
+extern int http_get(struct soap *soap);
 
 #endif

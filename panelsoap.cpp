@@ -17,6 +17,7 @@ int main(int argc, char **argv)
   progpath = argv[0];
   struct soap soap; 
   soap_init(&soap);
+  soap.fget = http_get;
   soap.authrealm = "panelsoap";
   if (argc < 2) // no args: assume this is a CGI application 
   {

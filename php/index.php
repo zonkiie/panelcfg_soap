@@ -6,10 +6,10 @@ set_exception_handler(function($exception) {
 	print_r($exception);
 });
 
-#$base_url = 'https://localhost/~rainer/panelcfg_soap';
-$base_url = 'http://localhost:8080/';
+$base_url = 'https://localhost/~rainer/panelcfg_soap'; $wsdl_url = $base_url . '/ns.wsdl';
+//$base_url = 'http://localhost:8080/'; $wsdl_url = $base_url . '?wsdl';
 
-$client = new SoapClient($base_url . '/ns.wsdl', 
+$client = new SoapClient($wsdl_url, 
 	array(
 		'location' => $base_url . '/panelsoap.cgi',
 		'trace'=>true,
