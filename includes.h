@@ -23,8 +23,7 @@
 #include <iterator>
 #include <boost/algorithm/string.hpp>
 #include <soapH.h>  // include the generated source code headers
-
-extern char * progpath;
-extern int http_get(struct soap *soap);
+#include <common_functions.h>
+#include <misc_soap_functions.h>
 
 #endif

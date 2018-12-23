@@ -3,9 +3,10 @@ INSTALL_DIR := ~/public_html/panelcfg_soap/
 EXECUTABLE := $(OUT_DIR)/panelsoap.cgi
 GSOAP_ROOT_DIR := /usr/share/gsoap/
 GSOAP_PLUGIN_DIR := $(GSOAP_ROOT_DIR)/plugin
+ALL_CPP_FILES := *.cpp
 # -std=c++11
 all: $(EXECUTABLE)
-$(EXECUTABLE): panelsoap.cpp panelsoap_functions.cpp
+$(EXECUTABLE): $(ALL_CPP_FILES)
 	mkdir -p $(OUT_DIR)
 	soapcpp2 -2 -b -x -SL -d$(OUT_DIR) -I/usr/share/gsoap/import panelsoap.h
 	g++ -Wall -g -D WITH_IPV6 -I. -I$(OUT_DIR) -I$(GSOAP_ROOT_DIR) -I$(GSOAP_PLUGIN_DIR) -o $@ $^ $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp -lgsoap++ -lpthread
