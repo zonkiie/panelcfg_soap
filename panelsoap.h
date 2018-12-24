@@ -24,4 +24,10 @@ int ns__getusers(std::vector<std::string>& userlist);
 //gsoap ns2 service method-action:      getusers "" 
 int ns__soapinfo(std::string& response);
 
+//gsoap ns2 service method-protocol:    user_exists SOAP 
+//gsoap ns2 service method-style:       user_exists rpc 
+//gsoap ns2 service method-encoding:    user_exists literal 
+//gsoap ns2 service method-action:      user_exists "" 
+int ns__userExists(std::string username, bool& response);
+
 #endif

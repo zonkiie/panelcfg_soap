@@ -6,8 +6,8 @@ set_exception_handler(function($exception) {
 	print_r($exception);
 });
 
-$base_url = 'https://localhost/~rainer/panelcfg_soap'; $wsdl_url = $base_url . '/ns.wsdl';
-//$base_url = 'http://localhost:8080/'; $wsdl_url = $base_url . '?wsdl';
+//$base_url = 'https://localhost/~rainer/panelcfg_soap'; $wsdl_url = $base_url . '/ns.wsdl';
+$base_url = 'http://localhost:8080/'; $wsdl_url = $base_url . '?wsdl';
 
 $client = new SoapClient($wsdl_url, 
 	array(
@@ -21,6 +21,7 @@ $client = new SoapClient($wsdl_url,
 		//'use' => SOAP_ENCODED,
 		'style'=> SOAP_RPC,
 		'use'      => SOAP_LITERAL,
+		'connection_timeout'=>10,
 	)
 );
 //var_dump($client->__getFunctions());
@@ -29,6 +30,7 @@ $client = new SoapClient($wsdl_url,
 try{
 	print_r($client->getusers());
 	print_r($client->soapinfo());
+	print_r($client->userExists(array("username"=>"root")));
 }
 catch(Exception $e)
 {

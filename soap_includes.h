@@ -6,5 +6,6 @@
 #include <plugin/threads.h>
 #define BACKLOG (100) // Max request backlog of pending requests
 #define MAX_THR (10)  // Max threads to serve requests
+#define MAX_QUEUE (1000) // Max. size of request queue 
 
 #endif

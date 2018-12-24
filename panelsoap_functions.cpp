@@ -47,3 +47,13 @@ int ns__soapinfo(struct soap* soap, string & response)
 	return SOAP_OK;
 }
 
+int ns__userExists(struct soap* soap, string username, bool& response)
+{
+	struct passwd* pw = getpwnam(username.c_str());
+	response = (pw != NULL);
+	return SOAP_OK;
+}
+
+int ns__checkPassword(struct soap* soap, string username, string password)
+{
+}

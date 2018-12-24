@@ -45,21 +45,20 @@ http_get_free:
 /// @see https://www.genivia.com/doc/guide/html/index.html#get
 int http_get(struct soap *soap) 
 {
+	//fprintf(stderr,  "%s:progdir: %s\n", __FUNCTION__, progdir);
 	FILE *fd = NULL;
 	char *s = strchr(soap->path, '?'); 
 	if (!s || strcmp(s, "?wsdl")) 
 		return SOAP_GET_METHOD;
-	char file[2048];
-	int fsize = get_filesize(file);
+	char file[MAXPATHLEN];
 	strcpy(file, "ns.wsdl");
-	
+	int fsize = get_filesize(file);
 	
 	if(fsize < 0) // file not found
 	{
-		sprintf(file, "%s/%s", dirname(progpath), "ns.wsdl");
+		sprintf(file, "%s/%s", progdir, "ns.wsdl");
 		if((fsize = get_filesize(file)) < 0) return 404;
 	}
-	
 	
 	fd = fopen(file, "rb"); // open WSDL file to copy 
 	if (!fd) 

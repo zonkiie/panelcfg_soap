@@ -7,11 +7,15 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/param.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <error.h>
 #include <sys/time.h>
 #include <libgen.h>
+#include <pwd.h>
+#include <limits.h>
+#include <errno.h>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -21,8 +25,10 @@
 #include <vector>
 #include <list>
 #include <iterator>
-#include <boost/algorithm/string.hpp>
 #include <soapH.h>  // include the generated source code headers
+#include <boost/algorithm/string.hpp>
+#include <boost/process.hpp>
+
 #include <common_functions.h>
 #include <misc_soap_functions.h>
 
