@@ -30,4 +30,6 @@ int ns__soapinfo(std::string& response);
 //gsoap ns2 service method-action:      user_exists "" 
 int ns__userExists(std::string username, bool& response);
 
+int ns__checkPassword(std::string username, std::string password, bool& response);
+
 #endif

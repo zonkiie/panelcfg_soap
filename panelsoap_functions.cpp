@@ -54,6 +54,8 @@ int ns__userExists(struct soap* soap, string username, bool& response)
 	return SOAP_OK;
 }
 
-int ns__checkPassword(struct soap* soap, string username, string password)
+int ns__checkPassword(struct soap* soap, string username, string password, bool& response)
 {
+	response = false;
+	return SOAP_OK;
 }
