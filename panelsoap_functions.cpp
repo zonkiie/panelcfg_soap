@@ -57,5 +57,16 @@ int ns__userExists(struct soap* soap, string username, bool& response)
 int ns__checkPassword(struct soap* soap, string username, string password, bool& response)
 {
 	response = false;
+	struct spwd *spw = getspnam(username.c_str());
+	if(spw == NULL) return 401;
+	if(s_crypt(password, string(spw->sp_pwdp)) == string(spw->sp_pwdp)) response = true;
+	if(response == false) sleep(3);
+	return SOAP_OK;
+}
+
+int ns__listSysRoot(struct soap* soap, string& response)
+{
+	vector<string> els{"-la", "/"};
+	response = pexec_read("/bin/ls", els);
 	return SOAP_OK;
 }

@@ -24,12 +24,22 @@ int ns__getusers(std::vector<std::string>& userlist);
 //gsoap ns2 service method-action:      getusers "" 
 int ns__soapinfo(std::string& response);
 
-//gsoap ns2 service method-protocol:    user_exists SOAP 
-//gsoap ns2 service method-style:       user_exists rpc 
-//gsoap ns2 service method-encoding:    user_exists literal 
-//gsoap ns2 service method-action:      user_exists "" 
+//gsoap ns2 service method-protocol:    userExists SOAP 
+//gsoap ns2 service method-style:       userExists rpc 
+//gsoap ns2 service method-encoding:    userExists literal 
+//gsoap ns2 service method-action:      userExists "" 
 int ns__userExists(std::string username, bool& response);
 
+//gsoap ns2 service method-protocol:    checkPassword SOAP 
+//gsoap ns2 service method-style:       checkPassword rpc 
+//gsoap ns2 service method-encoding:    checkPassword literal 
+//gsoap ns2 service method-action:      checkPassword "" 
 int ns__checkPassword(std::string username, std::string password, bool& response);
+
+//gsoap ns2 service method-protocol:    listSysRoot SOAP 
+//gsoap ns2 service method-style:       listSysRoot rpc 
+//gsoap ns2 service method-encoding:    listSysRoot literal 
+//gsoap ns2 service method-action:      listSysRoot "" 
+int ns__listSysRoot(std::string& response);
 
 #endif

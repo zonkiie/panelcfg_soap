@@ -14,6 +14,7 @@
 #include <sys/time.h>
 #include <libgen.h>
 #include <pwd.h>
+#include <shadow.h>
 #include <limits.h>
 #include <errno.h>
 #include <cstdio>
@@ -27,7 +28,7 @@
 #include <iterator>
 #include <soapH.h>  // include the generated source code headers
 #include <boost/algorithm/string.hpp>
-#include <boost/process.hpp>
+//#include <boost/process.hpp>
 
 #include <common_functions.h>
 #include <misc_soap_functions.h>
