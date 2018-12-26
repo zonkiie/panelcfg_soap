@@ -6,7 +6,7 @@ using namespace std;
 extern char * progpath;
 extern char * progdir;
 int get_filesize(char * filename);
-int execvp(string file, vector<string> argv);
+int execvp_fork(string file, vector<string> argv);
 string pexec_read(string command, vector<string> args);
 char **vector2carr(vector<string> &v);
 void free_carr(char ***carr);

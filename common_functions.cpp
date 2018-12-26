@@ -21,22 +21,27 @@ int get_filesize(char * filename)
 }
 
 // From: libzbcl
-
-int execvp(string file, vector<string> argv)
+/// @see http://www.cs.ecu.edu/karl/4630/sum01/example1.html
+int execvp_fork(string file, vector<string> argv)
 {
-	argv.insert(argv.begin(), basename(file));
-	char** cargv = (char**)malloc(argv.size());
-	vector<string>::iterator it = argv.begin();
-	int i = 0;
-	while(it != argv.end())
+	char** cargv;
+	int pid = fork();
+	int pid_child;
+	int state = -1;
+	if(pid == 0)
 	{
-		cargv[i++] = strdup(*it);
-		it++;
+		close(1);
+		close(2);
+		cargv = vector2carr(argv);
+		execvp(file.c_str(), cargv);
 	}
-	cargv[argv.size()] = NULL;
-	int state = execvp(file.c_str(), cargv);
-	for(int i = 0; cargv[i] != NULL; i++) free(cargv[i]);
-	free(cargv);
+	else
+	{
+		do {
+			pid_child = wait(&state);
+		} while(pid != pid_child);
+	}
+	//free_carr(&cargv);
 	return state;
 }
  
@@ -89,9 +94,11 @@ string pexec_read(string command, vector<string> args)
 char **vector2carr(vector<string> &v)
 {
 	char **cargs = (char**)malloc((v.size()+1)*sizeof(char**));
-	for(uint i = 0; i < v.size(); i++)
+	vector<string>::iterator it = v.begin();
+	while(it != v.end())
 	{
-		cargs[i] = strdup(v.at(i).c_str());
+		cargs[it - v.begin()] = strdup((*it).c_str());
+		it++;
 	}
 	cargs[v.size()] = NULL;
 	return(cargs);
@@ -128,10 +135,7 @@ char* strdup(string str)
 
 string s_crypt(string password, string salt)
 {
-/*	char* enc_pw_c = crypt (password.c_str(), salt.c_str());
-	string enc_pw = enc_pw_c;*/
-	string enc_pw = crypt(password.c_str(), salt.c_str());
-	return(enc_pw);
+	return(string(crypt(password.c_str(), salt.c_str())));
 }
 
 char get_rand_char()
@@ -218,7 +222,5 @@ bool check_password(string username, string password)
 {
 	struct spwd *spw = getspnam(username.c_str());
 	if(spw == NULL) return false;
-	char* enc_pass = spw->sp_pwdp;
-	if(s_crypt(password, string(enc_pass)) == string(enc_pass)) return true;
-	return false;
+	return(s_crypt(password, string(spw->sp_pwdp)) == string(spw->sp_pwdp));
 }

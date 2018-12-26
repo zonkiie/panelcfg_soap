@@ -13,8 +13,10 @@ void terminate(int sig)
 		sigcount++;
 		fprintf(stderr, "Terminating Process.\n");
 	}
-	if(sigcount >= 5) exit(0);
+	if(sigcount >= 2) exit(0);
 }
+
+void soap_cleanup();
 
 /// @see https://stackoverflow.com/questions/15302348/how-can-i-use-sigint-to-break-out-of-the-wait-for-accept-or-read
 void set_signal_handlers()
@@ -137,13 +139,17 @@ static int head = 0, tail = 0;
 static MUTEX_TYPE queue_lock;    // mutex for queue ops critical sections
 static COND_TYPE queue_notempty; // condition variable when queue is empty
 static COND_TYPE queue_notfull;  // condition variable when queue is full
+struct soap soap;
+struct soap *soap_thr[MAX_THR];
+THREAD_TYPE tid[MAX_THR];
 /// @see https://www.genivia.com/doc/guide/html/index.html#mt
 int start_mt_queue(int argc, char **argv) 
 {
 	set_signal_handlers();
+	atexit(soap_cleanup);
 	progpath = argv[0];
 	progdir = dirname(progpath);
-	struct soap soap; 
+	//struct soap soap; 
 	soap_init(&soap);
 	soap.fget = http_get;
 	soap.authrealm = "panelsoap";
@@ -155,8 +161,8 @@ int start_mt_queue(int argc, char **argv)
 	} 
 	else 
 	{
-		struct soap *soap_thr[MAX_THR]; // each thread needs a context 
-		THREAD_TYPE tid[MAX_THR]; 
+		//struct soap *soap_thr[MAX_THR]; // each thread needs a context 
+		//THREAD_TYPE tid[MAX_THR]; 
 		int port = atoi(argv[1]); // first command-line arg is port 
 		SOAP_SOCKET m, s; 
 		int i; 
@@ -196,7 +202,7 @@ int start_mt_queue(int argc, char **argv)
 				break; 
 			} 
 		}
-		fprintf(stderr, "Terminating work.\n");
+		/*fprintf(stderr, "Terminating work.\n");
 		for (i = 0; i < MAX_THR; i++) 
 			enqueue(SOAP_INVALID_SOCKET);
 		for (i = 0; i < MAX_THR; i++) 
@@ -208,11 +214,11 @@ int start_mt_queue(int argc, char **argv)
 		} 
 		COND_CLEANUP(queue_notfull); 
 		COND_CLEANUP(queue_notempty); 
-		MUTEX_CLEANUP(queue_lock); 
+		MUTEX_CLEANUP(queue_lock); */
 	} 
-	soap_destroy(&soap);
+	/*soap_destroy(&soap);
 	soap_end(&soap);
-	soap_done(&soap); 
+	soap_done(&soap); */
 	return 0; 
 } 
 void *process_queue(void *soap) 
@@ -255,6 +261,27 @@ SOAP_SOCKET dequeue()
 	COND_SIGNAL(queue_notfull);
 	MUTEX_UNLOCK(queue_lock);
 	return s;
+}
+
+void soap_cleanup()
+{
+	int i;
+	fprintf(stderr, "Terminating work.\n");
+	for (i = 0; i < MAX_THR; i++) 
+		enqueue(SOAP_INVALID_SOCKET);
+	for (i = 0; i < MAX_THR; i++) 
+	{
+		if(debug) fprintf(stderr, "Waiting for thread %d to terminate... ", i); 
+		THREAD_JOIN(tid[i]); 
+		if(debug) fprintf(stderr, "terminated\n"); 
+		soap_free(soap_thr[i]); 
+	} 
+	COND_CLEANUP(queue_notfull); 
+	COND_CLEANUP(queue_notempty); 
+	MUTEX_CLEANUP(queue_lock);
+	soap_destroy(&soap);
+	soap_end(&soap);
+	soap_done(&soap);
 }
 
 int main(int argc, char **argv)
