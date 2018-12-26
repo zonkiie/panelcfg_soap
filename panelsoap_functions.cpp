@@ -70,3 +70,26 @@ int ns__listSysRoot(struct soap* soap, string& response)
 	response = pexec_read("/bin/ls", els);
 	return SOAP_OK;
 }
+
+int ns__addUser(struct soap* soap, string username, string password, bool& response)
+{
+	string enc_password = s_crypt(password, make_sha256_salt());
+	vector<string> args{"-p", enc_password, "-m", username};
+	response = execvp("/usr/sbin/useradd", args);
+	return SOAP_OK;
+}
+
+int ns__changePassword(struct soap* soap, string username, string password, bool& response)
+{
+	string enc_password = s_crypt(password, make_sha256_salt());
+	vector<string> args{"-p", enc_password};
+	response = execvp("/usr/sbin/usermod", args);
+	return SOAP_OK;
+}
+
+int ns__delUser(struct soap* soap, string username, bool& response)
+{
+	vector<string> args{"-r", username};
+	response = execvp("/usr/sbin/userdel", args);
+	return SOAP_OK;
+}

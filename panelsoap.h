@@ -42,4 +42,24 @@ int ns__checkPassword(std::string username, std::string password, bool& response
 //gsoap ns2 service method-action:      listSysRoot "" 
 int ns__listSysRoot(std::string& response);
 
+//gsoap ns2 service method-protocol:    addUser SOAP 
+//gsoap ns2 service method-style:       addUser rpc 
+//gsoap ns2 service method-encoding:    addUser literal 
+//gsoap ns2 service method-action:      addUser "" 
+int ns__addUser(std::string username, std::string password, bool& response);
+
+//gsoap ns2 service method-protocol:    changePassword SOAP 
+//gsoap ns2 service method-style:       changePassword rpc 
+//gsoap ns2 service method-encoding:    changePassword literal 
+//gsoap ns2 service method-action:      changePassword "" 
+int ns__changePassword(std::string username, std::string password, bool& response);
+
+//gsoap ns2 service method-protocol:    delUser SOAP 
+//gsoap ns2 service method-style:       delUser rpc 
+//gsoap ns2 service method-encoding:    delUser literal 
+//gsoap ns2 service method-action:      delUser "" 
+int ns__delUser(std::string username, bool& response);
+
+
+
 #endif

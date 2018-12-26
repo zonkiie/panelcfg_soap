@@ -24,6 +24,7 @@ int get_filesize(char * filename)
 
 int execvp(string file, vector<string> argv)
 {
+	argv.insert(argv.begin(), basename(file));
 	char** cargv = (char**)malloc(argv.size());
 	vector<string>::iterator it = argv.begin();
 	int i = 0;
