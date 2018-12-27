@@ -85,7 +85,7 @@ int ns__addUser(struct soap* soap, string username, string password, bool& respo
 int ns__changePassword(struct soap* soap, string username, string password, bool& response)
 {
 	string enc_password = s_crypt(password, make_sha512_salt());
-	vector<string> args{"usermod", "-p", enc_password};
+	vector<string> args{"usermod", "-p", enc_password, username};
 	response = execvp_fork("/usr/sbin/usermod", args);
 	return SOAP_OK;
 }

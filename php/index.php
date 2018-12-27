@@ -32,7 +32,10 @@ try{
 	#print_r($client->soapinfo());
 	#print_r($client->userExists(array("username"=>"root")));
 	print_r($client->addUser(array("username"=>"sample", "password"=>"sample1")));
-	#print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample1")));
+	print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample1")));
+	print_r($client->changePassword(array("username"=>"sample", "password"=>"sample2")));
+	print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample2")));
+	print_r($client->delUser(array("username"=>"sample")));
 	#print_r($client->listSysRoot());
 }
 catch(Exception $e)
