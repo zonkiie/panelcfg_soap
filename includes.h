@@ -11,6 +11,7 @@
 #include <libgen.h>
 #include <pwd.h>
 #include <shadow.h>
+#include <grp.h>
 #include <limits.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -21,6 +22,8 @@
 #include <sys/time.h>
 #include <cstdio>
 #include <cstdlib>
+#include <set>
+#include <exception>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -29,10 +32,15 @@
 #include <list>
 #include <iterator>
 #include <soapH.h>  // include the generated source code headers
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
 //#include <boost/process.hpp>
 
 #include <common_functions.h>
 #include <misc_soap_functions.h>
+namespace pt = boost::property_tree;
+using namespace std;
 
 #endif
