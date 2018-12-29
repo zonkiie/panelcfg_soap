@@ -54,6 +54,12 @@ int ns__addUser(std::string username, std::string password, bool& response);
 //gsoap ns2 service method-action:      changePassword "" 
 int ns__changePassword(std::string username, std::string password, bool& response);
 
+//gsoap ns2 service method-protocol:    changeMyPassword SOAP 
+//gsoap ns2 service method-style:       changeMyPassword rpc 
+//gsoap ns2 service method-encoding:    changeMyPassword literal 
+//gsoap ns2 service method-action:      changeMyPassword "" 
+int ns__changeMyPassword(std::string password, bool& response);
+
 //gsoap ns2 service method-protocol:    delUser SOAP 
 //gsoap ns2 service method-style:       delUser rpc 
 //gsoap ns2 service method-encoding:    delUser literal 

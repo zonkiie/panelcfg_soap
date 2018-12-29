@@ -24,6 +24,8 @@ char get_rand_char();
 string get_rand_string(int);
 int cr_check_pass(const char *, const char *);
 int cr_check_pass(string, string);
+bool check_credentials(struct soap* soap);
+bool check_credentials(struct soap* soap, struct passwd** pwd);
 bool check_password(string username, string password);
 bool check_auth(struct soap* soap);
 

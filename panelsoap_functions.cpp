@@ -92,6 +92,15 @@ int ns__changePassword(struct soap* soap, string username, string password, bool
 	return SOAP_OK;
 }
 
+int ns__changeMyPassword(struct soap* soap, string password, bool& response)
+{
+	if(!check_credentials(soap)) return 403;
+	string enc_password = s_crypt(password, make_sha512_salt());
+	vector<string> args{"usermod", "-p", enc_password, soap->userid};
+	response = execvp_fork("/usr/sbin/usermod", args);
+	return SOAP_OK;
+}
+
 int ns__delUser(struct soap* soap, string username, bool& response)
 {
 	if(!check_auth(soap)) return 403;

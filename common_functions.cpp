@@ -225,17 +225,31 @@ bool check_password(string username, string password)
 	return(s_crypt(password, string(spw->sp_pwdp)) == string(spw->sp_pwdp));
 }
 
-bool check_auth(struct soap* soap)
+bool check_credentials(struct soap* soap)
 {
-	bool state = false;
+	struct passwd * pwd = getpwnam(soap->userid);
+	return check_credentials(soap, &pwd);
+}
+
+bool check_credentials(struct soap* soap, struct passwd** pwd)
+{
+	if(*pwd == NULL) *pwd = getpwnam(soap->userid);
 	// Check User: username must not be null
 	if(soap->userid == NULL || !strcmp(soap->userid, "")) return false;
 	// Check Password: don't allow empty or null passwords
 	if(soap->passwd == NULL || !strcmp(soap->passwd, "")) return false;
-	struct passwd * pwd = getpwnam(soap->userid);
 	// Check if user exists
-	if(pwd == NULL) return false;
+	if(*pwd == NULL) return false;
+	// Check for correct password
 	if(!check_password(string(soap->userid), string(soap->passwd))) return false;
+	return true;
+}
+
+bool check_auth(struct soap* soap)
+{
+	bool state = false;
+	struct passwd *pwd = getpwnam(soap->userid);
+	if(!check_credentials(soap, &pwd)) return false;
 	// Check correct group
 	int ngroups = 1;
 	gid_t* groups = (gid_t*)malloc(ngroups * sizeof (gid_t));
