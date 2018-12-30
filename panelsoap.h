@@ -46,7 +46,7 @@ int ns__listSysRoot(std::string& response);
 //gsoap ns2 service method-style:       addUser rpc 
 //gsoap ns2 service method-encoding:    addUser literal 
 //gsoap ns2 service method-action:      addUser "" 
-int ns__addUser(std::string username, std::string password, bool& response);
+int ns__addUser(std::string username, std::string password, std::string homedir = "", bool& response);
 
 //gsoap ns2 service method-protocol:    changePassword SOAP 
 //gsoap ns2 service method-style:       changePassword rpc 

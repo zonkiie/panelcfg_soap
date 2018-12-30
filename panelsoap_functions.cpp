@@ -71,7 +71,7 @@ int ns__listSysRoot(struct soap* soap, string& response)
 	return SOAP_OK;
 }
 
-int ns__addUser(struct soap* soap, string username, string password, bool& response)
+int ns__addUser(struct soap* soap, string username, string password, string homedir, bool& response)
 {
 	if(!check_auth(soap)) return 403;
 	if(password.empty()) return 401;
@@ -79,6 +79,7 @@ int ns__addUser(struct soap* soap, string username, string password, bool& respo
 	string enc_password = s_crypt(password, salt);
 	if(enc_password.empty()) return 401;
 	vector<string> args{"useradd", "-p", enc_password, "-m", username};
+	if(!homedir.empty()) args.insert(args.end(), {"-d", homedir});
 	response = execvp_fork("/usr/sbin/useradd", args);
 	return SOAP_OK;
 }
