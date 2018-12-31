@@ -46,7 +46,7 @@ int ns__listSysRoot(std::string& response);
 //gsoap ns2 service method-style:       addUser rpc 
 //gsoap ns2 service method-encoding:    addUser literal 
 //gsoap ns2 service method-action:      addUser "" 
-int ns__addUser(std::string username, std::string password, std::string homedir = "", bool& response);
+int ns__addUser(std::string username, std::string password, std::string homedir = "", std::string shell = "", std::string groupname = "", bool& response);
 
 //gsoap ns2 service method-protocol:    changePassword SOAP 
 //gsoap ns2 service method-style:       changePassword rpc 
@@ -66,6 +66,10 @@ int ns__changeMyPassword(std::string password, bool& response);
 //gsoap ns2 service method-action:      delUser "" 
 int ns__delUser(std::string username, bool& response);
 
-
+//gsoap ns2 service method-protocol:    getAllVhosts SOAP 
+//gsoap ns2 service method-style:       getAllVhosts rpc 
+//gsoap ns2 service method-encoding:    getAllVhosts literal 
+//gsoap ns2 service method-action:      getAllVhosts "" 
+int ns__getAllVhosts(std::vector<std::string>& response);
 
 #endif

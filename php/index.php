@@ -14,7 +14,7 @@ $client = new SoapClient($wsdl_url,
 		'location' => $base_url . '/panelsoap.cgi',
 		'trace'=>true,
 		'cache_wsdl' => WSDL_CACHE_NONE,
-		'login'=>"username1",
+		'login'=>"admin",
 		'password'=>"password1",
 		'authentication'=>SOAP_AUTHENTICATION_BASIC,
 		'soap_version'=>SOAP_1_2,
@@ -28,14 +28,15 @@ $client = new SoapClient($wsdl_url,
 //echo "Types:" . PHP_EOL;
 //var_dump($client->__getTypes());
 try{
-	print_r($client->getusers());
+	#print_r($client->getusers());
 	#print_r($client->soapinfo());
 	#print_r($client->userExists(array("username"=>"root")));
-	print_r($client->addUser(array("username"=>"sample", "password"=>"sample1")));
-	print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample1")));
-	print_r($client->changePassword(array("username"=>"sample", "password"=>"sample2")));
-	print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample2")));
-	print_r($client->delUser(array("username"=>"sample")));
+	#print_r($client->addUser(array("username"=>"sample", "password"=>"sample1")));
+	#print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample1")));
+	#print_r($client->changePassword(array("username"=>"sample", "password"=>"sample2")));
+	#print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample2")));
+	#print_r($client->delUser(array("username"=>"sample")));
+	print_r($client->getAllVhosts());
 	#print_r($client->listSysRoot());
 }
 catch(Exception $e)

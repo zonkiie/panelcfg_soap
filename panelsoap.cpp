@@ -50,6 +50,7 @@ int start_mt(int argc, char **argv)
   struct soap soap; 
   soap_init(&soap);
   soap.fget = http_get;
+  soap.bind_flags |= SO_REUSEADDR | SO_REUSEPORT;
   soap.authrealm = "panelsoap";
   if (argc < 2) // no args: assume this is a CGI application 
   {
@@ -152,6 +153,7 @@ int start_mt_queue(int argc, char **argv)
 	//struct soap soap; 
 	soap_init(&soap);
 	soap.fget = http_get;
+	soap.bind_flags |= SO_REUSEADDR | SO_REUSEPORT;
 	soap.authrealm = "panelsoap";
 	if (argc < 2) // no args: assume this is a CGI application 
 	{
@@ -282,6 +284,7 @@ void soap_cleanup()
 	soap_destroy(&soap);
 	soap_end(&soap);
 	soap_done(&soap);
+	soap_force_closesock(&soap);
 }
 
 int main(int argc, char **argv)

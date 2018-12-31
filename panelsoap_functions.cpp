@@ -71,7 +71,7 @@ int ns__listSysRoot(struct soap* soap, string& response)
 	return SOAP_OK;
 }
 
-int ns__addUser(struct soap* soap, string username, string password, string homedir, bool& response)
+int ns__addUser(struct soap* soap, string username, string password, string homedir, string shell, string groupname, bool& response)
 {
 	if(!check_auth(soap)) return 403;
 	if(password.empty()) return 401;
@@ -80,6 +80,8 @@ int ns__addUser(struct soap* soap, string username, string password, string home
 	if(enc_password.empty()) return 401;
 	vector<string> args{"useradd", "-p", enc_password, "-m", username};
 	if(!homedir.empty()) args.insert(args.end(), {"-d", homedir});
+	if(!shell.empty()) args.insert(args.end(), {"-s", shell});
+	if(!groupname.empty()) args.insert(args.end(), {"-g", groupname});
 	response = execvp_fork("/usr/sbin/useradd", args);
 	return SOAP_OK;
 }
@@ -107,5 +109,12 @@ int ns__delUser(struct soap* soap, string username, bool& response)
 	if(!check_auth(soap)) return 403;
 	vector<string> args{"userdel", "-r", username};
 	response = execvp_fork("/usr/sbin/userdel", args);
+	return SOAP_OK;
+}
+
+int ns__getAllVhosts(struct soap* soap, vector<string>& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = get_all_vhosts();
 	return SOAP_OK;
 }

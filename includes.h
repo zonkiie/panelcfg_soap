@@ -1,6 +1,8 @@
 #ifndef __includes__
 #define __includes__
 
+using namespace std;
+
 #include <alloca.h>
 #include <stddef.h>
 #include <unistd.h>
@@ -27,6 +29,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <regex>
 #include <fstream>
 #include <vector>
 #include <list>
@@ -40,7 +43,7 @@
 
 #include <common_functions.h>
 #include <misc_soap_functions.h>
+#include <apache_functions.h>
 namespace pt = boost::property_tree;
-using namespace std;
 
 #endif

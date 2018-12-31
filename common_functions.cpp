@@ -53,6 +53,9 @@ int execvp_fork(string file, vector<string> argv)
 */
 string pexec_read(string command, vector<string> args)
 {
+	args.insert(args.begin(), basename(command));
+	//fprintf(stderr, "Command: %s\n", command.c_str());
+	//for(uint i = 0; i < args.size(); i++) fprintf(stderr, "args[%d]: %s\n", i, args[i].c_str());
 	string retstr = "";
 	int inpipe[2];
 	char inbuffer[256];
@@ -66,7 +69,6 @@ string pexec_read(string command, vector<string> args)
 		close(1);
 		dup(inpipe[1]);
 		close(inpipe[0]);
-		args.insert(args.begin(), basename(command));
 		char **cargs = vector2carr(args);
 		execvp(command.c_str(), cargs);
 		free_carr(&cargs);
