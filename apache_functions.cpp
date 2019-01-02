@@ -26,6 +26,34 @@ vector<string> get_all_vhosts()
 	return vhosts;
 }
 
+vector<vhost> get_all_vhost_data()
+{
+	vector<vhost> vhosts;
+	vector<string> args{"-t", "-D", "DUMP_VHOSTS"};
+	string result = pexec_read("/usr/sbin/apache2ctl", args);
+	regex rex_vhost("\\s*port \\d+ namevhost ([^\\s]+) \\((.+)\\)");
+	regex rex_alias("\\s*alias ([^\\s]+).*");
+	smatch sm;
+	stringstream strs(result);
+	string line;
+	if(!result.empty())
+	{
+		while(getline(strs, line, '\n'))
+		{
+			if("VirtualHost configuration:" == line) continue;
+			if(regex_match(line, sm, rex_vhost))
+			{
+				vhost vh;
+				vh.vhost_name = sm[1];
+				vh.source_file = sm[2];
+				vhosts.push_back(vh);
+			}
+			if(regex_match(line, sm, rex_alias)) vhosts.back().vhost_aliases.push_back(sm[1]);
+		}
+	}
+	return vhosts;
+}
+
 vector<string> get_all_sites()
 {
 	vector<string> sites;

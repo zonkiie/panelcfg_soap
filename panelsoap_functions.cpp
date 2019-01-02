@@ -118,3 +118,10 @@ int ns__getAllVhosts(struct soap* soap, vector<string>& response)
 	response = get_all_vhosts();
 	return SOAP_OK;
 }
+
+
+int ns__getAllVhostData(struct soap* soap, vector<vhost>& response)
+{
+	response = get_all_vhost_data();
+	return SOAP_OK;
+}

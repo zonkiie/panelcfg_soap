@@ -3,6 +3,7 @@
 #define __panelsoap__
 
 #import "stlvector.h"
+#import "vhost.h"
 
 //gsoap ns2 schema namespace:   urn:ns
 //gsoap ns2 schema form:        unqualified
@@ -71,5 +72,11 @@ int ns__delUser(std::string username, bool& response);
 //gsoap ns2 service method-encoding:    getAllVhosts literal 
 //gsoap ns2 service method-action:      getAllVhosts "" 
 int ns__getAllVhosts(std::vector<std::string>& response);
+
+//gsoap ns2 service method-protocol:    getAllVhostData SOAP 
+//gsoap ns2 service method-style:       getAllVhostData rpc 
+//gsoap ns2 service method-encoding:    getAllVhostData literal 
+//gsoap ns2 service method-action:      getAllVhostData "" 
+int ns__getAllVhostData(std::vector<vhost>& response);
 
 #endif
