@@ -9,7 +9,8 @@ public:
 	std::string redirect_target;
 	int vhost_type;
 	std::string source_file;
-	bool vhost_equals(vhost vhost1, vhost vhost2) { return vhost1.vhost_name == vhost2.vhost_name; }
 };
 
- 
+//int operator==(const vhost& vhost1, const vhost& vhost2) { return vhost1.vhost_name == vhost2.vhost_name; }
+//int operator!=(const vhost& vhost1, const vhost& vhost2) { return !(vhost1 == vhost2); }
+

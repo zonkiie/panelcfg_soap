@@ -79,4 +79,10 @@ int ns__getAllVhosts(std::vector<std::string>& response);
 //gsoap ns2 service method-action:      getAllVhostData "" 
 int ns__getAllVhostData(std::vector<vhost>& response);
 
+//gsoap ns2 service method-protocol:    getVhostEntryString SOAP 
+//gsoap ns2 service method-style:       getVhostEntryString rpc 
+//gsoap ns2 service method-encoding:    getVhostEntryString literal 
+//gsoap ns2 service method-action:      getVhostEntryString "" 
+int ns__getVhostEntryString(std::string vhost_name, std::string& response);
+
 #endif

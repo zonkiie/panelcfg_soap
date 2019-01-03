@@ -36,8 +36,9 @@ try{
 	#print_r($client->changePassword(array("username"=>"sample", "password"=>"sample2")));
 	#print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample2")));
 	#print_r($client->delUser(array("username"=>"sample")));
-	print_r($client->getAllVhosts());
+	#print_r($client->getAllVhosts());
 	print_r($client->getAllVhostData());
+	print_r($client->getVhostEntryString(array("vhost-name"=>"mysite1.de")));
 	#print_r($client->listSysRoot());
 }
 catch(Exception $e)
