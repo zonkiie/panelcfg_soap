@@ -28,5 +28,6 @@ bool check_credentials(struct soap* soap);
 bool check_credentials(struct soap* soap, struct passwd** pwd);
 bool check_password(string username, string password);
 bool check_auth(struct soap* soap);
+vector<string> getFileList(string dirPath);
 
 #endif

@@ -275,3 +275,32 @@ bool check_auth(struct soap* soap)
 	
 	return state;
 }
+
+/// @see https://thispointer.com/c-get-the-list-of-all-files-in-a-given-directory-and-its-sub-directories-using-boost-c17/
+vector<string> getFileList(string dirPath)
+{
+	vector<string> fileList;
+	try
+	{
+		if (filesys::exists(dirPath) && filesys::is_directory(dirPath))
+		{
+			filesys::recursive_directory_iterator iter(dirPath);
+			filesys::recursive_directory_iterator end;
+			while (iter != end)
+			{
+				if (!filesys::is_directory(iter->path())) fileList.push_back(iter->path().string());
+				error_code ec;
+				// Increment the iterator to point to next entry in recursive iteration
+				iter.increment(ec);
+				if (ec) {
+					std::cerr << "Error While Accessing : " << iter->path().string() << " :: " << ec.message() << '\n';
+				}
+			}
+		}
+	}
+	catch (std::system_error & e)
+	{
+		std::cerr << "Exception :: " << e.what();
+	}
+	return fileList;
+}

@@ -39,11 +39,14 @@ using namespace std;
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 //#include <boost/process.hpp>
+namespace pt = boost::property_tree;
+using namespace boost::system;
+namespace filesys = boost::filesystem;
 
 #include <common_functions.h>
 #include <misc_soap_functions.h>
 #include <apache_functions.h>
-namespace pt = boost::property_tree;
 
 #endif

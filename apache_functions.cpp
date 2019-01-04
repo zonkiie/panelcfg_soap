@@ -97,15 +97,18 @@ string get_vhost_entry_string(string vhost_name)
 get_vhost_entry_string_return:
 	return entry;
 }
-
 vector<string> get_all_sites()
 {
-	vector<string> sites;
+	vector<string> sites = getFileList(SITEDIR);
 	return sites;
 }
 
 bool add_site(string sitename)
 {
+	string filename = string(SITEDIR) + "/" + sitename + ".conf";
+	ofstream outfile(filename, ios_base::out|ios_base::app);
+	outfile << HEADER_TEXT;
+	outfile.close();
 	return false;
 }
 
