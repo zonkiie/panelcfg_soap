@@ -179,20 +179,19 @@ string create_vhost_string(string vhostname, string documentroot)
 bool add_vhost(string sitename, string vhostname, string documentroot)
 {
 	string vhstr = create_vhost_string(vhostname, documentroot);
-	set_vhost_string(sitename, vhostname, vhstr);
-	return true;
+	return set_vhost_string(sitename, vhostname, vhstr);
 }
 
 bool add_vhost(string sitename, vhost vh)
 {
 	string vhstr = create_vhost_string(vh);
-	set_vhost_string(sitename, vh.vhost_name, vhstr);
-	return true;
+	return set_vhost_string(sitename, vh.vhost_name, vhstr);
 }
 
 /// @see https://stackoverflow.com/questions/116038/what-is-the-best-way-to-read-an-entire-file-into-a-stdstring-in-c
 bool set_vhost_string(string sitename, string vhostname, string vhost_string)
 {
+	cerr << "Line:" << __LINE__ << ", Sitename:" << sitename << ", Vhostname:" << vhostname << endl;
 	string current_string = get_vhost_entry_string(vhostname);
 	stringstream site_str("");
 	ifstream ifs(get_site_file(sitename));
@@ -202,18 +201,21 @@ bool set_vhost_string(string sitename, string vhostname, string vhost_string)
 	site_str.str("");
 	if(current_string != "")
 	{
+		cerr << "Line:" << __LINE__ << endl;
 		boost::replace_all(site_string, current_string, vhost_string);
 		ofstream ofs(get_site_file(sitename));
 		ofs << site_string;
 		ofs.close();
+		return ofs.good();
 	}
 	else
 	{
+		cerr << "Line:" << __LINE__ << " Site:" << get_site_file(sitename) << endl;
 		ofstream ofs(get_site_file(sitename), ostream::app);
 		ofs << vhost_string;
 		ofs.close();
+		return ofs.good();
 	}
-	return true;
 }
 
 bool change_vhost(string sitename, string vhostname, string documentroot)

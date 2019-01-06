@@ -126,9 +126,9 @@ int ns__getAllVhostData(struct soap* soap, vector<vhost>& response)
 	return SOAP_OK;
 }
 
-int ns__getVhostEntryString(struct soap* soap, string vhost_name, string& response)
+int ns__getVhostEntryString(struct soap* soap, string vhostName, string& response)
 {
-	response = get_vhost_entry_string(vhost_name);
+	response = get_vhost_entry_string(vhostName);
 	return SOAP_OK;
 }
 

@@ -90,7 +90,7 @@ int ns__getVhostEntryString(std::string vhost_name, std::string& response);
 //gsoap ns2 service method-style:       addVhost rpc 
 //gsoap ns2 service method-encoding:    addVhost literal 
 //gsoap ns2 service method-action:      addVhost "" 
-int ns__addVhost(std::string vhost_name, std::string site_name, std::string documentroot, bool& response);
+int ns__addVhost(std::string vhostName, std::string siteName, std::string documentRoot, bool& response);
 
 //gsoap ns2 service method-protocol:    delVhost SOAP 
 //gsoap ns2 service method-style:       delVhost rpc 
