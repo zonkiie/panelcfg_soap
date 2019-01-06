@@ -42,7 +42,8 @@ using namespace std;
 #include <boost/filesystem.hpp>
 //#include <boost/process.hpp>
 namespace pt = boost::property_tree;
-using namespace boost::system;
+namespace bs = boost::system;
+//using namespace boost::system;
 namespace filesys = boost::filesystem;
 
 #include <common_functions.h>

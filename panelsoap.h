@@ -3,6 +3,7 @@
 #define __panelsoap__
 
 #import "stlvector.h"
+#import "vhost_type.h"
 #import "vhost.h"
 
 //gsoap ns2 schema namespace:   urn:ns
@@ -84,5 +85,17 @@ int ns__getAllVhostData(std::vector<vhost>& response);
 //gsoap ns2 service method-encoding:    getVhostEntryString literal 
 //gsoap ns2 service method-action:      getVhostEntryString "" 
 int ns__getVhostEntryString(std::string vhost_name, std::string& response);
+
+//gsoap ns2 service method-protocol:    addVhost SOAP 
+//gsoap ns2 service method-style:       addVhost rpc 
+//gsoap ns2 service method-encoding:    addVhost literal 
+//gsoap ns2 service method-action:      addVhost "" 
+int ns__addVhost(std::string vhost_name, std::string site_name, std::string documentroot, bool& response);
+
+//gsoap ns2 service method-protocol:    delVhost SOAP 
+//gsoap ns2 service method-style:       delVhost rpc 
+//gsoap ns2 service method-encoding:    delVhost literal 
+//gsoap ns2 service method-action:      delVhost "" 
+int ns__delVhost(std::string siteName, std::string vhostName, bool& response);
 
 #endif

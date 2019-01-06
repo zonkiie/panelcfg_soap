@@ -1,4 +1,5 @@
 #import "stlvector.h"
+/*#import "vhost_type.h"*/
 
 class vhost
 {
@@ -7,7 +8,8 @@ public:
 	std::vector<std::string> vhost_aliases;
 	std::string document_root;
 	std::string redirect_target;
-	int vhost_type;
+	int type;
+	int port;
 	std::string source_file;
 };
 

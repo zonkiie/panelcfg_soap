@@ -44,6 +44,36 @@ int execvp_fork(string file, vector<string> argv)
 	//free_carr(&cargv);
 	return state;
 }
+
+/**
+ * @brief executes an external program. you don't need to insert the basename of the command on the argv vector, it's done by this command.
+ * @param file the file to execute
+ * @param argv an vector of arguments
+ * @return the exit code of the executed program.
+ */
+int execvp_fork2(string file, vector<string> argv)
+{
+	argv.insert(argv.begin(), basename(file));
+	char** cargv;
+	int pid = fork();
+	int pid_child;
+	int state = -1;
+	if(pid == 0)
+	{
+		close(1);
+		close(2);
+		cargv = vector2carr(argv);
+		execvp(file.c_str(), cargv);
+	}
+	else
+	{
+		do {
+			pid_child = wait(&state);
+		} while(pid != pid_child);
+	}
+	//free_carr(&cargv);
+	return state;
+}
  
 /**
 *  Fork an Process, create a Pipe and read the Answer of the Child from the Pipe
@@ -284,18 +314,9 @@ vector<string> getFileList(string dirPath)
 	{
 		if (filesys::exists(dirPath) && filesys::is_directory(dirPath))
 		{
-			filesys::recursive_directory_iterator iter(dirPath);
-			filesys::recursive_directory_iterator end;
-			while (iter != end)
-			{
-				if (!filesys::is_directory(iter->path())) fileList.push_back(iter->path().string());
-				error_code ec;
-				// Increment the iterator to point to next entry in recursive iteration
-				iter.increment(ec);
-				if (ec) {
-					std::cerr << "Error While Accessing : " << iter->path().string() << " :: " << ec.message() << '\n';
-				}
-			}
+			for (filesys::directory_entry& entry : filesys::directory_iterator(dirPath))
+				if (!filesys::is_directory(entry.path())) fileList.push_back(entry.path().string());
+			
 		}
 	}
 	catch (std::system_error & e)

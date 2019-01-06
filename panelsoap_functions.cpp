@@ -131,3 +131,17 @@ int ns__getVhostEntryString(struct soap* soap, string vhost_name, string& respon
 	response = get_vhost_entry_string(vhost_name);
 	return SOAP_OK;
 }
+
+int ns__addVhost(struct soap* soap, string siteName, string vhostName, string documentRoot, bool& response)
+{
+	response = add_vhost(siteName, vhostName, documentRoot);
+	return SOAP_OK;
+}
+
+int ns__delVhost(struct soap* soap, string siteName, string vhostName, bool& response)
+{
+	response = del_vhost(siteName, vhostName);
+	return SOAP_OK;
+}
+
+
