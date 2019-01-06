@@ -6,7 +6,7 @@
 
 vector<string> get_all_vhosts();
 vector<vhost> get_all_vhost_data();
-string get_vhost_entry_string(string vhost_name);
+string get_vhost_entry_string(string vhostName);
 vector<string> get_all_sites();
 string get_site_file(string sitename);
 bool site_exists(string sitename);
@@ -21,5 +21,7 @@ bool add_vhost(string sitename, vhost vh);
 bool change_vhost(string sitename, string vhostname, string documentroot);
 bool change_vhost(string sitename, vhost vh);
 bool del_vhost(string sitename, string vhostname);
+bool restart_apache();
+bool reload_apache();
 
 #endif

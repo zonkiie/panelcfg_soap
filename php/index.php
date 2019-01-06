@@ -40,7 +40,7 @@ try{
 	print_r($client->getAllVhostData());
 	print_r($client->getVhostEntryString(array("vhostName"=>"mysite1.de")));
 	print_r($client->addVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de", "documentRoot"=>"/home/rainer/Programmierung/cpp")));
-	#print_r($client->delVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de")));
+	print_r($client->delVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de")));
 	#print_r($client->listSysRoot());
 }
 catch(Exception $e)

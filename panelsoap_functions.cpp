@@ -119,7 +119,6 @@ int ns__getAllVhosts(struct soap* soap, vector<string>& response)
 	return SOAP_OK;
 }
 
-
 int ns__getAllVhostData(struct soap* soap, vector<vhost>& response)
 {
 	response = get_all_vhost_data();
@@ -135,12 +134,21 @@ int ns__getVhostEntryString(struct soap* soap, string vhostName, string& respons
 int ns__addVhost(struct soap* soap, string siteName, string vhostName, string documentRoot, bool& response)
 {
 	response = add_vhost(siteName, vhostName, documentRoot);
+	reload_apache();
+	return SOAP_OK;
+}
+
+int ns__changeVhost(struct soap* soap, string siteName, string vhostName, string documentRoot, bool& response)
+{
+	response = change_vhost(siteName, vhostName, documentRoot);
+	reload_apache();
 	return SOAP_OK;
 }
 
 int ns__delVhost(struct soap* soap, string siteName, string vhostName, bool& response)
 {
 	response = del_vhost(siteName, vhostName);
+	reload_apache();
 	return SOAP_OK;
 }
 

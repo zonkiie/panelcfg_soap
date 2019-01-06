@@ -55,7 +55,7 @@ vector<vhost> get_all_vhost_data()
 	return vhosts;
 }
 
-string get_vhost_entry_string(string vhost_name)
+string get_vhost_entry_string(string vhostName)
 {
 	vector<vhost> vh = get_all_vhost_data();
 	string source("");
@@ -64,7 +64,7 @@ string get_vhost_entry_string(string vhost_name)
 	regex vhost_close_tag("\\s*<\\s*/VirtualHost\\s*>");
 	for(vector<vhost>::iterator it = vh.begin() ; it != vh.end(); it++)
 	{
-		if((*it).vhost_name == vhost_name || std::find((*it).vhost_aliases.begin(), (*it).vhost_aliases.end(), vhost_name) != (*it).vhost_aliases.end())
+		if((*it).vhost_name == vhostName || std::find((*it).vhost_aliases.begin(), (*it).vhost_aliases.end(), vhostName) != (*it).vhost_aliases.end())
 		{
 			source = (*it).source_file;
 			break;
@@ -121,7 +121,7 @@ bool add_site(string sitename)
 {
 	string filename = get_site_file(sitename);
 	ofstream outfile(filename, ios_base::out|ios_base::app);
-	outfile << HEADER_TEXT;
+	outfile << HEADER_TEXT << endl;
 	outfile.close();
 	return set_site_status(sitename, true) == 0;
 }
@@ -169,7 +169,7 @@ string create_vhost_string(string vhostname, string documentroot)
 	stringstream rstr;
 	rstr << "<VirtualHost *:80>\n";
 	rstr << "\tServerName " << vhostname << endl;
-	rstr << "\tServerAlias " << vhostname << "www." << vhostname << endl;
+	rstr << "\tServerAlias " << vhostname << " www." << vhostname << endl;
 	rstr << "\tDocumentRoot " << documentroot << endl;
 	rstr << "</VirtualHost>\n";
 	rstr << endl;
@@ -191,7 +191,6 @@ bool add_vhost(string sitename, vhost vh)
 /// @see https://stackoverflow.com/questions/116038/what-is-the-best-way-to-read-an-entire-file-into-a-stdstring-in-c
 bool set_vhost_string(string sitename, string vhostname, string vhost_string)
 {
-	cerr << "Line:" << __LINE__ << ", Sitename:" << sitename << ", Vhostname:" << vhostname << endl;
 	string current_string = get_vhost_entry_string(vhostname);
 	stringstream site_str("");
 	ifstream ifs(get_site_file(sitename));
@@ -201,8 +200,9 @@ bool set_vhost_string(string sitename, string vhostname, string vhost_string)
 	site_str.str("");
 	if(current_string != "")
 	{
-		cerr << "Line:" << __LINE__ << endl;
 		boost::replace_all(site_string, current_string, vhost_string);
+		ba::trim(site_string);
+		site_string += '\n';
 		ofstream ofs(get_site_file(sitename));
 		ofs << site_string;
 		ofs.close();
@@ -210,7 +210,11 @@ bool set_vhost_string(string sitename, string vhostname, string vhost_string)
 	}
 	else
 	{
-		cerr << "Line:" << __LINE__ << " Site:" << get_site_file(sitename) << endl;
+		if(!site_exists(sitename))
+		{
+			add_site(sitename);
+			set_site_status(sitename, true);
+		}
 		ofstream ofs(get_site_file(sitename), ostream::app);
 		ofs << vhost_string;
 		ofs.close();
@@ -236,4 +240,16 @@ bool del_vhost(string sitename, string vhostname)
 {
 	set_vhost_string(sitename, vhostname, "");
 	return false;
+}
+
+bool restart_apache()
+{
+	vector<string> args{"apache2ctl", "restart"};
+	return execvp_fork("/usr/sbin/apache2ctl", args);
+}
+
+bool reload_apache()
+{
+	vector<string> args{"apache2ctl", "reload"};
+	return execvp_fork("/usr/sbin/apache2ctl", args);
 }

@@ -45,6 +45,7 @@ namespace pt = boost::property_tree;
 namespace bs = boost::system;
 //using namespace boost::system;
 namespace filesys = boost::filesystem;
+namespace ba = boost::algorithm;
 
 #include <common_functions.h>
 #include <misc_soap_functions.h>

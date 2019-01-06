@@ -84,13 +84,19 @@ int ns__getAllVhostData(std::vector<vhost>& response);
 //gsoap ns2 service method-style:       getVhostEntryString rpc 
 //gsoap ns2 service method-encoding:    getVhostEntryString literal 
 //gsoap ns2 service method-action:      getVhostEntryString "" 
-int ns__getVhostEntryString(std::string vhost_name, std::string& response);
+int ns__getVhostEntryString(std::string vhostName, std::string& response);
 
 //gsoap ns2 service method-protocol:    addVhost SOAP 
 //gsoap ns2 service method-style:       addVhost rpc 
 //gsoap ns2 service method-encoding:    addVhost literal 
 //gsoap ns2 service method-action:      addVhost "" 
-int ns__addVhost(std::string vhostName, std::string siteName, std::string documentRoot, bool& response);
+int ns__addVhost(std::string siteName, std::string vhostName, std::string documentRoot, bool& response);
+
+//gsoap ns2 service method-protocol:    changeVhost SOAP 
+//gsoap ns2 service method-style:       changeVhost rpc 
+//gsoap ns2 service method-encoding:    changeVhost literal 
+//gsoap ns2 service method-action:      changeVhost "" 
+int ns__changeVhost(std::string siteName, std::string vhostName, std::string documentRoot, bool& response);
 
 //gsoap ns2 service method-protocol:    delVhost SOAP 
 //gsoap ns2 service method-style:       delVhost rpc 
