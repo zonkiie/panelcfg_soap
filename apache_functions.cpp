@@ -238,8 +238,7 @@ bool change_vhost(string sitename, vhost vh)
 
 bool del_vhost(string sitename, string vhostname)
 {
-	set_vhost_string(sitename, vhostname, "");
-	return false;
+	return set_vhost_string(sitename, vhostname, "");
 }
 
 bool restart_apache()
