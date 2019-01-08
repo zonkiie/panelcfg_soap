@@ -104,4 +104,10 @@ int ns__changeVhost(std::string siteName, std::string vhostName, std::string doc
 //gsoap ns2 service method-action:      delVhost "" 
 int ns__delVhost(std::string siteName, std::string vhostName, bool& response);
 
+//gsoap ns2 service method-protocol:    setVhostEntryString SOAP 
+//gsoap ns2 service method-style:       setVhostEntryString rpc 
+//gsoap ns2 service method-encoding:    setVhostEntryString literal 
+//gsoap ns2 service method-action:      setVhostEntryString "" 
+int ns__setVhostEntryString(std::string siteName, std::string vhostName, std::string vhostString, bool& response);
+
 #endif

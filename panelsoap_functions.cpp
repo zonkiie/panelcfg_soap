@@ -157,4 +157,10 @@ int ns__delVhost(struct soap* soap, string siteName, string vhostName, bool& res
 	return SOAP_OK;
 }
 
-
+int ns__setVhostEntryString(struct soap* soap, string siteName, string vhostName, string vhostString, bool& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = set_vhost_string(siteName, vhostName, vhostString);
+	reload_apache();
+	return SOAP_OK;
+}
