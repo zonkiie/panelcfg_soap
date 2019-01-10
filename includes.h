@@ -50,5 +50,6 @@ namespace ba = boost::algorithm;
 #include <common_functions.h>
 #include <misc_soap_functions.h>
 #include <apache_functions.h>
+#include <user_functions.h>
 
 #endif

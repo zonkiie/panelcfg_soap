@@ -3,26 +3,9 @@
 using namespace std;
 
 
-/// @see https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
-/// @see http://www.martinbroadhurst.com/how-to-split-a-string-in-c.html
 int ns__getusers(struct soap* soap, vector<string>& userlist)
 {
-	ifstream ifs("/etc/passwd");
-	
-	string line;
-	while(getline(ifs, line))
-	{
-		vector<string> entries;
-		//boost::split(entries, line, [](char c){return c == ':';});
-		boost::split(entries, line, boost::is_any_of(":"));
-		for(vector<string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
-			//cout << *j << endl;
-			userlist.push_back((*i));
-			break;
-		}
-		//cout << *i << " "; // this will print all the contents of *features*
-	}
-	ifs.close();
+	userlist = getUserList();
 	return SOAP_OK;
 }
 
@@ -75,8 +58,7 @@ int ns__addUser(struct soap* soap, string username, string password, string home
 {
 	if(!check_auth(soap)) return 403;
 	if(password.empty()) return 401;
-	string salt = make_sha512_salt();
-	string enc_password = s_crypt(password, salt);
+	string enc_password = s_crypt(password, make_sha512_salt());
 	if(enc_password.empty()) return 401;
 	vector<string> args{"useradd", "-p", enc_password, "-m", username};
 	if(!homedir.empty()) args.insert(args.end(), {"-d", homedir});
@@ -89,9 +71,7 @@ int ns__addUser(struct soap* soap, string username, string password, string home
 int ns__changePassword(struct soap* soap, string username, string password, bool& response)
 {
 	if(!check_auth(soap)) return 403;
-	string enc_password = s_crypt(password, make_sha512_salt());
-	vector<string> args{"usermod", "-p", enc_password, username};
-	response = execvp_fork("/usr/sbin/usermod", args);
+	response = changePassword(username, password);
 	return SOAP_OK;
 }
 
@@ -107,8 +87,7 @@ int ns__changeMyPassword(struct soap* soap, string password, bool& response)
 int ns__delUser(struct soap* soap, string username, bool& response)
 {
 	if(!check_auth(soap)) return 403;
-	vector<string> args{"userdel", "-r", username};
-	response = execvp_fork("/usr/sbin/userdel", args);
+	response = userDel(username);
 	return SOAP_OK;
 }
 
