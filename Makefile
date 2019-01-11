@@ -11,7 +11,8 @@ GENERATED_SOURCE_FILES := $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp
 #GENERATED_SOURCE_FILES := $(wildcard build/*.cpp)
 ALL_SOURCE_FILES := $(ALL_CPP_FILES) $(GENERATED_SOURCE_FILES)
 #ALL_OBJECT_FILES := $(addprefix $(OUT_DIR)/, $(ALL_CPP_FILES:.cpp=.o))
-ALL_OBJECT_FILES := $(ALL_SOURCE_FILES:.cpp=.o)
+#ALL_OBJECT_FILES := $(ALL_SOURCE_FILES:.cpp=.o)
+ALL_OBJECT_FILES := $(ALL_CPP_FILES:%.cpp=$(OUT_DIR)/%.o) $(GENERATED_SOURCE_FILES:.cpp=.o)
 all: $(EXECUTABLE)
 #$(EXECUTABLE): $(OUT_DIR) $(ALL_SOURCE_FILES)
 #	g++ $(CXXFLAGS) -o $@ $(ALL_SOURCE_FILES) $(LDFLAGS)
@@ -21,6 +22,9 @@ $(OUT_DIR):
 	mkdir -p $(OUT_DIR)
 $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp:
 	soapcpp2 -2 -b -x -SL -d$(OUT_DIR) -I/usr/share/gsoap/import panelsoap.h
+$(OUT_DIR)/%.o: %.cpp
+	mkdir -p '$(@D)'
+	$(CXX) -c $(CXXFLAGS) $< -o $@
 $(ALL_OBJECT_FILES): $(OUT_DIR) $(ALL_SOURCE_FILES)
 mrproper: clean
 clean:
