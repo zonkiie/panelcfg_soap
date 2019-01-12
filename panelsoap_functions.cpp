@@ -39,10 +39,9 @@ int ns__userExists(struct soap* soap, string username, bool& response)
 
 int ns__checkPassword(struct soap* soap, string username, string password, bool& response)
 {
-	response = false;
-	struct spwd *spw = getspnam(username.c_str());
-	if(spw == NULL) return 401;
-	if(s_crypt(password, string(spw->sp_pwdp)) == string(spw->sp_pwdp)) response = true;
+	int error_status = 0;
+	response = checkPassword(error_status, username, password);
+	if(response == false && error_status == 401) return 401;
 	if(response == false) sleep(3);
 	return SOAP_OK;
 }
@@ -57,14 +56,9 @@ int ns__listSysRoot(struct soap* soap, string& response)
 int ns__addUser(struct soap* soap, string username, string password, string homedir, string shell, string groupname, bool& response)
 {
 	if(!check_auth(soap)) return 403;
-	if(password.empty()) return 401;
-	string enc_password = s_crypt(password, make_sha512_salt());
-	if(enc_password.empty()) return 401;
-	vector<string> args{"useradd", "-p", enc_password, "-m", username};
-	if(!homedir.empty()) args.insert(args.end(), {"-d", homedir});
-	if(!shell.empty()) args.insert(args.end(), {"-s", shell});
-	if(!groupname.empty()) args.insert(args.end(), {"-g", groupname});
-	response = execvp_fork("/usr/sbin/useradd", args);
+	int error_status = 0;
+	response = addUser(error_status, username, password, homedir, shell, groupname);
+	if(error_status != 0) return error_status;
 	return SOAP_OK;
 }
 
@@ -78,9 +72,7 @@ int ns__changePassword(struct soap* soap, string username, string password, bool
 int ns__changeMyPassword(struct soap* soap, string password, bool& response)
 {
 	if(!check_credentials(soap)) return 403;
-	string enc_password = s_crypt(password, make_sha512_salt());
-	vector<string> args{"usermod", "-p", enc_password, soap->userid};
-	response = execvp_fork("/usr/sbin/usermod", args);
+	response = changePassword(soap->userid, password);
 	return SOAP_OK;
 }
 

@@ -3,7 +3,6 @@ INSTALL_DIR := ~/public_html/panelcfg_soap/
 EXECUTABLE := $(OUT_DIR)/panelsoap.cgi
 GSOAP_ROOT_DIR := /usr/share/gsoap/
 GSOAP_PLUGIN_DIR := $(GSOAP_ROOT_DIR)/plugin
-#ALL_CPP_FILES := *.cpp
 ALL_CPP_FILES := $(wildcard *.cpp)
 LDFLAGS := -lgsoap++ -lpthread -lcrypt -lboost_filesystem -lboost_iostreams -lboost_signals -lboost_system
 CXXFLAGS := -std=c++11 -Wall -g -D WITH_IPV6 -I. -I$(OUT_DIR) -I$(GSOAP_ROOT_DIR) -I$(GSOAP_PLUGIN_DIR)

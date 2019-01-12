@@ -36,3 +36,36 @@ bool changePassword(string username, string password)
 	vector<string> args{"usermod", "-p", enc_password, username};
 	return execvp_fork("/usr/sbin/usermod", args);
 }
+
+bool checkPassword(int & error_status, string username, string password)
+{
+	error_status = 0;
+	struct spwd *spw = getspnam(username.c_str());
+	if(spw == NULL)
+	{
+		error_status = 401;
+		return false;
+	}
+	return (s_crypt(password, string(spw->sp_pwdp)) == string(spw->sp_pwdp));
+}
+
+bool addUser(int & error_status, string username, string password, string homedir, string shell, string groupname)
+{
+	error_status = 0;
+	if(password.empty())
+	{
+		error_status = 401;
+		return false;
+	}
+	string enc_password = s_crypt(password, make_sha512_salt());
+	if(enc_password.empty())
+	{
+		error_status = 401;
+		return false;
+	}
+	vector<string> args{"useradd", "-p", enc_password, "-m", username};
+	if(!homedir.empty()) args.insert(args.end(), {"-d", homedir});
+	if(!shell.empty()) args.insert(args.end(), {"-s", shell});
+	if(!groupname.empty()) args.insert(args.end(), {"-g", groupname});
+	return execvp_fork("/usr/sbin/useradd", args);
+}
