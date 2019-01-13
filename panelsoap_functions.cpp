@@ -79,7 +79,28 @@ int ns__changeMyPassword(struct soap* soap, string password, bool& response)
 int ns__delUser(struct soap* soap, string username, bool& response)
 {
 	if(!check_auth(soap)) return 403;
-	response = userDel(username);
+	response = delUser(username);
+	return SOAP_OK;
+}
+
+int ns__changeShell(struct soap* soap, string username, string shell, bool& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = changeShell(username, shell);
+	return SOAP_OK;
+}
+
+int ns__getUserGroupMembership(struct soap* soap, string username, vector<string>& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = getUserGroupMembership(username);
+	return SOAP_OK;
+}
+
+int ns__getGroupMembers(struct soap* soap, string groupname, vector<string>& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = getGroupMembers(groupname);
 	return SOAP_OK;
 }
 

@@ -68,6 +68,24 @@ int ns__changeMyPassword(std::string password, bool& response);
 //gsoap ns2 service method-action:      delUser "" 
 int ns__delUser(std::string username, bool& response);
 
+//gsoap ns2 service method-protocol:    changeShell SOAP 
+//gsoap ns2 service method-style:       changeShell rpc 
+//gsoap ns2 service method-encoding:    changeShell literal 
+//gsoap ns2 service method-action:      changeShell "" 
+int ns__changeShell(std::string username, std::string shell = "", bool& response);
+
+//gsoap ns2 service method-protocol:    getUserGroupMembership SOAP 
+//gsoap ns2 service method-style:       getUserGroupMembership rpc 
+//gsoap ns2 service method-encoding:    getUserGroupMembership literal 
+//gsoap ns2 service method-action:      getUserGroupMembership "" 
+int ns__getUserGroupMembership(std::string username, std::vector<std::string>& response);
+
+//gsoap ns2 service method-protocol:    getGroupMembers SOAP 
+//gsoap ns2 service method-style:       getGroupMembers rpc 
+//gsoap ns2 service method-encoding:    getGroupMembers literal 
+//gsoap ns2 service method-action:      getGroupMembers "" 
+int ns__getGroupMembers(std::string groupname, std::vector<std::string>& response);
+
 //gsoap ns2 service method-protocol:    getAllVhosts SOAP 
 //gsoap ns2 service method-style:       getAllVhosts rpc 
 //gsoap ns2 service method-encoding:    getAllVhosts literal 
@@ -109,5 +127,6 @@ int ns__delVhost(std::string siteName, std::string vhostName, bool& response);
 //gsoap ns2 service method-encoding:    setVhostEntryString literal 
 //gsoap ns2 service method-action:      setVhostEntryString "" 
 int ns__setVhostEntryString(std::string siteName, std::string vhostName, std::string vhostString, bool& response);
+
 
 #endif

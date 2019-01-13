@@ -24,7 +24,7 @@ $client = new SoapClient($wsdl_url,
 		'connection_timeout'=>10,
 	)
 );
-//var_dump($client->__getFunctions());
+var_dump($client->__getFunctions());
 //echo "Types:" . PHP_EOL;
 //var_dump($client->__getTypes());
 try{
@@ -36,11 +36,13 @@ try{
 	#print_r($client->changePassword(array("username"=>"sample", "password"=>"sample2")));
 	#print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample2")));
 	#print_r($client->delUser(array("username"=>"sample")));
+	print_r($client->getUserGroupMembership(array("username"=>"admin")));
+	print_r($client->getGroupMembers(array("groupname"=>"admin")));
 	#print_r($client->getAllVhosts());
-	print_r($client->getAllVhostData());
-	print_r($client->getVhostEntryString(array("vhostName"=>"mysite1.de")));
-	print_r($client->addVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de", "documentRoot"=>"/home/rainer/Programmierung/cpp")));
-	print_r($client->delVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de")));
+	#print_r($client->getAllVhostData());
+	#print_r($client->getVhostEntryString(array("vhostName"=>"mysite1.de")));
+	#print_r($client->addVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de", "documentRoot"=>"/home/rainer/Programmierung/cpp")));
+	#print_r($client->delVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de")));
 	#print_r($client->listSysRoot());
 }
 catch(Exception $e)

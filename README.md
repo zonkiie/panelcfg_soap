@@ -20,3 +20,5 @@ The apache tools a2ensite, a2dissite, apache2ctl must be in the /usr/sbin direct
 As we need to authenticate, the Program needs to run as process, not as cgi.
 This could create some problems with older gSOAP Versions on older Linux systems.
 On the developer's machine for example the compiled program would not start because the protocol IPV6ONLY was unknown.
+
+If a user is in the group "admin", he gets all permissions to the operations.
