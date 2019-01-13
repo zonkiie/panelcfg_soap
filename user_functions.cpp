@@ -27,14 +27,14 @@ vector<string> getUserList()
 bool delUser(string username)
 {
 	vector<string> args{"userdel", "-r", username};
-	return execvp_fork("/usr/sbin/userdel", args);
+	return execvp_fork("/usr/sbin/userdel", args) == 0;
 }
 
 bool changePassword(string username, string password)
 {
 	string enc_password = s_crypt(password, make_sha512_salt());
 	vector<string> args{"usermod", "-p", enc_password, username};
-	return execvp_fork("/usr/sbin/usermod", args);
+	return execvp_fork("/usr/sbin/usermod", args) == 0;
 }
 
 bool checkPassword(int & error_status, string username, string password)
@@ -43,10 +43,26 @@ bool checkPassword(int & error_status, string username, string password)
 	struct spwd *spw = getspnam(username.c_str());
 	if(spw == NULL)
 	{
-		error_status = 401;
+		error_status = 404;
 		return false;
 	}
 	return (s_crypt(password, string(spw->sp_pwdp)) == string(spw->sp_pwdp));
+}
+
+bool infoUser(int & error_status, string& username, string& homedir, string& shell, string& groupname, int & uid)
+{
+	struct passwd *pwd = getpwnam(username.c_str());
+	if(pwd == 0)
+	{
+		error_status = 404;
+		return false;
+	}
+	homedir = string(pwd->pw_dir == NULL?"":pwd->pw_dir);
+	shell = string(pwd->pw_shell == NULL?"":pwd->pw_shell);
+	struct group * grp = getgrgid(pwd->pw_gid);
+	groupname = string(grp->gr_name == NULL?"":grp->gr_name);
+	uid = pwd->pw_uid;
+	return true;
 }
 
 bool addUser(int & error_status, string username, string password, string homedir, string shell, string groupname)
@@ -54,20 +70,20 @@ bool addUser(int & error_status, string username, string password, string homedi
 	error_status = 0;
 	if(password.empty())
 	{
-		error_status = 401;
+		error_status = 420;
 		return false;
 	}
 	string enc_password = s_crypt(password, make_sha512_salt());
 	if(enc_password.empty())
 	{
-		error_status = 401;
+		error_status = 420;
 		return false;
 	}
 	vector<string> args{"useradd", "-p", enc_password, "-m", username};
 	if(!homedir.empty()) args.insert(args.end(), {"-d", homedir});
 	if(!shell.empty()) args.insert(args.end(), {"-s", shell});
 	if(!groupname.empty()) args.insert(args.end(), {"-g", groupname});
-	return execvp_fork("/usr/sbin/useradd", args);
+	return execvp_fork("/usr/sbin/useradd", args) == 0;
 }
 
 bool changeShell(string username, string shell)
@@ -108,6 +124,13 @@ bool delGroup(string groupname)
 {
 	vector<string> args{"groupdel", groupname};
 	return execvp_fork("/usr/sbin/groupdel", args) == 0;
+}
+
+bool setGroupMembers(string groupname, vector<string> members)
+{
+	string str_members = boost::algorithm::join(members, ",");
+	vector<string> args{"gpasswd", "-M", str_members, groupname};
+	return execvp_fork("/usr/bin/gpasswd", args) == 0;
 }
 
 vector<string> getGroupMembers(string groupname)

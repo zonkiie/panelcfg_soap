@@ -22,3 +22,4 @@ This could create some problems with older gSOAP Versions on older Linux systems
 On the developer's machine for example the compiled program would not start because the protocol IPV6ONLY was unknown.
 
 If a user is in the group "admin", he gets all permissions to the operations.
+Later, the privileged users will be configurable.

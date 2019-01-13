@@ -83,10 +83,38 @@ int ns__delUser(struct soap* soap, string username, bool& response)
 	return SOAP_OK;
 }
 
+int ns__infoUser(struct soap* soap, string username, userinfo& uinfo)
+{
+	if(!check_auth(soap)) return 403;
+	int error_status, uid;
+	string shell, homedir, groupname;
+	if(infoUser(error_status, username, homedir, shell, groupname, uid) == false) return error_status;
+	uinfo.username = username;
+	uinfo.homedir = homedir;
+	uinfo.groupname = groupname;
+	uinfo.shell = shell;
+	uinfo.uid = uid;
+	return SOAP_OK;
+}
+
 int ns__changeShell(struct soap* soap, string username, string shell, bool& response)
 {
 	if(!check_auth(soap)) return 403;
 	response = changeShell(username, shell);
+	return SOAP_OK;
+}
+
+int ns__addGroup(struct soap* soap, string groupname, bool& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = addGroup(groupname);
+	return SOAP_OK;
+}
+
+int ns__delGroup(struct soap* soap, string groupname, bool& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = delGroup(groupname);
 	return SOAP_OK;
 }
 
@@ -101,6 +129,13 @@ int ns__getGroupMembers(struct soap* soap, string groupname, vector<string>& res
 {
 	if(!check_auth(soap)) return 403;
 	response = getGroupMembers(groupname);
+	return SOAP_OK;
+}
+
+int ns__setGroupMembers(struct soap* soap, string groupname, vector<string> members, bool& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = setGroupMembers(groupname, members);
 	return SOAP_OK;
 }
 
