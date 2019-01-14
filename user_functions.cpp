@@ -12,14 +12,14 @@ vector<string> getUserList()
 bool delUser(string username)
 {
 	vector<string> args{"userdel", "-r", username};
-	return execvp_fork("/usr/sbin/userdel", args) == 0;
+	return execvp_fork("userdel", args) == 0;
 }
 
 bool changePassword(string username, string password)
 {
 	string enc_password = s_crypt(password, make_sha512_salt());
 	vector<string> args{"usermod", "-p", enc_password, username};
-	return execvp_fork("/usr/sbin/usermod", args) == 0;
+	return execvp_fork("usermod", args) == 0;
 }
 
 bool checkPassword(int & error_status, string username, string password)
@@ -68,13 +68,13 @@ bool addUser(int & error_status, string username, string password, string homedi
 	if(!homedir.empty()) args.insert(args.end(), {"-d", homedir});
 	if(!shell.empty()) args.insert(args.end(), {"-s", shell});
 	if(!groupname.empty()) args.insert(args.end(), {"-g", groupname});
-	return execvp_fork("/usr/sbin/useradd", args) == 0;
+	return execvp_fork("useradd", args) == 0;
 }
 
 bool changeShell(string username, string shell)
 {
 	vector<string> args{"usermod", "-s", shell, username};
-	return execvp_fork("/usr/sbin/usermod", args);
+	return execvp_fork("usermod", args);
 }
 
 vector<string> getUserGroupMembership(string username)
@@ -102,20 +102,20 @@ vector<string> getUserGroupMembership(string username)
 bool addGroup(string groupname)
 {
 	vector<string> args{"groupadd", groupname};
-	return execvp_fork("/usr/sbin/groupadd", args) == 0;
+	return execvp_fork("groupadd", args) == 0;
 }
 
 bool delGroup(string groupname)
 {
 	vector<string> args{"groupdel", groupname};
-	return execvp_fork("/usr/sbin/groupdel", args) == 0;
+	return execvp_fork("groupdel", args) == 0;
 }
 
 bool setGroupMembers(string groupname, vector<string> members)
 {
 	string str_members = boost::algorithm::join(members, ",");
 	vector<string> args{"gpasswd", "-M", str_members, groupname};
-	return execvp_fork("/usr/bin/gpasswd", args) == 0;
+	return execvp_fork("gpasswd", args) == 0;
 }
 
 vector<string> getGroupMembers(string groupname)
@@ -143,11 +143,11 @@ vector<string> getGroupMembers(string groupname)
 bool addUserToGroup(string username, string groupname)
 {
 	vector<string> args{"usermod", "-a", "-G", groupname, username};
-	return execvp_fork("/usr/sbin/groupdel", args) == 0;
+	return execvp_fork("groupdel", args) == 0;
 }
 
 bool delUserFromGroup(string username, string groupname)
 {
 	vector<string> args{"gpasswd", "-d", username, groupname};
-	return execvp_fork("/usr/sbin/gpasswd", args) == 0;
+	return execvp_fork("gpasswd", args) == 0;
 }

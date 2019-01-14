@@ -5,7 +5,7 @@ vector<string> get_all_vhosts()
 {
 	vector<string> vhosts;
 	vector<string> args{"-t", "-D", "DUMP_VHOSTS"};
-	string result = pexec_read("/usr/sbin/apache2ctl", args);
+	string result = pexec_read("apache2ctl", args);
 	regex rex_vhost("\\s*port \\d+ namevhost ([^\\s]+) .+");
 	regex rex_alias("\\s*alias ([^\\s]+).*");
 	smatch sm;
@@ -30,7 +30,7 @@ vector<vhost> get_all_vhost_data()
 {
 	vector<vhost> vhosts;
 	vector<string> args{"-t", "-D", "DUMP_VHOSTS"};
-	string result = pexec_read("/usr/sbin/apache2ctl", args);
+	string result = pexec_read("apache2ctl", args);
 	regex rex_vhost("\\s*port (\\d+) namevhost ([^\\s]+) \\((.+)\\)");
 	regex rex_alias("\\s*alias ([^\\s]+).*");
 	smatch sm;
@@ -132,12 +132,12 @@ bool set_site_status(string sitename, bool status)
 	if(status == true)
 	{
 		vector<string> args{"a2ensize", sitename};
-		res = execvp_fork("/usr/sbin/a2ensize", args);
+		res = execvp_fork("a2ensize", args);
 	}
 	else
 	{
 		vector<string> args{"a2dissize", sitename};
-		res = execvp_fork("/usr/sbin/a2dissize", args);
+		res = execvp_fork("a2dissize", args);
 	}
 	return res == 0;
 }
@@ -244,11 +244,11 @@ bool del_vhost(string sitename, string vhostname)
 bool restart_apache()
 {
 	vector<string> args{"apache2ctl", "restart"};
-	return execvp_fork("/usr/sbin/apache2ctl", args);
+	return execvp_fork("apache2ctl", args);
 }
 
 bool reload_apache()
 {
 	vector<string> args{"apache2ctl", "reload"};
-	return execvp_fork("/usr/sbin/apache2ctl", args);
+	return execvp_fork("apache2ctl", args);
 }
