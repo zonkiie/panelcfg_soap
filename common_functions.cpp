@@ -150,6 +150,45 @@ void free_carr(char ***carr)
 	free(*carr);
 }
 
+mode_t get_type_for_path(string path)
+{
+	struct stat st;
+	int res;
+	res = lstat(path.c_str(), &st);
+	if(res == -1) return (mode_t)-1;
+	else return st.st_mode & S_IFMT;
+}
+
+int access(string path, int mode) { return access(path.c_str(), mode); }
+
+bool is_special_node(string path)
+{
+	if(access(path, F_OK)) return false;
+	if(get_type_for_path(path) & (S_IFBLK | S_IFCHR | S_IFIFO | S_IFSOCK)) return true;
+	else return false;
+}
+
+bool is_symlink(string path)
+{
+	if(access(path, F_OK)) return false;
+	if(get_type_for_path(path) & S_IFLNK) return true;
+	else return false;
+}
+
+bool is_file(string path)
+{
+	if(access(path, F_OK)) return false;
+	if(get_type_for_path(path) & S_IFREG) return true;
+	else return false;
+}
+
+bool is_dir(string path)
+{
+	if(access(path, F_OK)) return false;
+	if(get_type_for_path(path) & S_IFDIR) return true;
+	else return false;
+}
+
 string basename(string path)
 {
 	return(string(basename((char*)path.c_str())));
@@ -306,22 +345,20 @@ bool check_auth(struct soap* soap)
 	return state;
 }
 
-/// @see https://thispointer.com/c-get-the-list-of-all-files-in-a-given-directory-and-its-sub-directories-using-boost-c17/
-vector<string> getFileList(string dirPath)
+vector<string> getFileList(string path)
 {
-	vector<string> fileList;
-	try
+	vector<string> entries;
+	string entry;
+	DIR           *dir_p = NULL;
+	struct dirent *dir_entry_p = NULL;
+	
+	if(NULL == (dir_p = opendir(path.c_str()))) return entries;
+
+	while(NULL != (dir_entry_p = readdir(dir_p)))
 	{
-		if (filesys::exists(dirPath) && filesys::is_directory(dirPath))
-		{
-			for (filesys::directory_entry& entry : filesys::directory_iterator(dirPath))
-				if (!filesys::is_directory(entry.path())) fileList.push_back(entry.path().string());
-			
-		}
+		entry = string(dir_entry_p->d_name);
+		if((entry != ".") && (entry != "..") && (is_file(path + string("/") + entry))) entries.push_back(entry);
 	}
-	catch (std::system_error & e)
-	{
-		std::cerr << "Exception :: " << e.what();
-	}
-	return fileList;
+	closedir(dir_p);
+	return(entries);
 }

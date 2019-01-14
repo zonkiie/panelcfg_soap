@@ -16,6 +16,7 @@ using namespace std;
 #include <grp.h>
 #include <limits.h>
 #include <errno.h>
+#include <dirent.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>

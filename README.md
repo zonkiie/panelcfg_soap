@@ -23,3 +23,12 @@ On the developer's machine for example the compiled program would not start beca
 
 If a user is in the group "admin", he gets all permissions to the operations.
 Later, the privileged users will be configurable.
+
+## References to other tools
+
+A lot of code comes from libzbcl, another project which I develop.
+[libzbcl](https://sourceforge.net/projects/zonkiies-big-collection-lib/)
+
+Sometimes in the future, the functions will be merged to libzbcl and the panelcfg tool will be linked to the library.
+
+
