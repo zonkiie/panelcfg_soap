@@ -362,3 +362,39 @@ vector<string> getFileList(string path)
 	closedir(dir_p);
 	return(entries);
 }
+
+/// @see https://stackoverflow.com/questions/26046949/find-the-device-or-mountpoint-of-arbitrary-files-on-linux-using-c
+int getmntpt(char const  *path, char *mount_point)
+{
+	char *test_path = malloc(PATH_MAX), *test_end;
+	struct stat cur_stat, prev_stat;
+
+	if (lstat(path, &prev_stat) < 0)
+		return -1;
+
+	test_end = stpcpy(test_path, path);
+	if (!S_ISDIR(prev_stat.st_mode)) {
+		test_end = strrchr(test_path, '/');
+		if (test_end == NULL)
+			test_end = stpcpy(test_path, ".");
+		else
+			*test_end = '\0';
+	}
+
+	for (;;) {
+		test_end = stpcpy(test_end, "/..");     
+		if (lstat(test_path, &cur_stat) < 0)
+			return -1;
+		if (cur_stat.st_dev != prev_stat.st_dev || cur_stat.st_ino == prev_stat.st_ino) /* root */
+			break; /* this is the mount point */
+		prev_stat = cur_stat;
+	}
+
+	*(test_end - 3) = '\0';
+	if (realpath(test_path, mount_point) == NULL) {
+		free(test_path);
+		return -1;
+	}
+
+	return 0;
+}

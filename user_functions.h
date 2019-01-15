@@ -3,6 +3,7 @@
 
 vector<string> getUserList();
 bool infoUser(int & error_status, string& username, string& homedir, string& shell, string& groupname, int & uid);
+bool infoUser(int & error_status, string& username, userinfo& info);
 bool delUser(string username);
 bool changePassword(string username, string password);
 bool checkPassword(int & error_status, string username, string password);
@@ -15,5 +16,7 @@ bool setGroupMembers(string groupname, vector<string> members);
 vector<string> getGroupMembers(string groupname);
 bool addUserToGroup(string username, string groupname);
 bool delUserFromGroup(string username, string groupname);
+quotadata getUserQuotaData(string username, string filesystem = "");
+bool setUserQuotaData(quotadata qd);
 
 #endif

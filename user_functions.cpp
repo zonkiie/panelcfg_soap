@@ -50,6 +50,22 @@ bool infoUser(int & error_status, string& username, string& homedir, string& she
 	return true;
 }
 
+bool infoUser(int & error_status, string& username, userinfo& info)
+{
+	struct passwd *pwd = getpwnam(username.c_str());
+	if(pwd == 0)
+	{
+		error_status = 404;
+		return false;
+	}
+	info.homedir = string(pwd->pw_dir == NULL?"":pwd->pw_dir);
+	info.shell = string(pwd->pw_shell == NULL?"":pwd->pw_shell);
+	struct group * grp = getgrgid(pwd->pw_gid);
+	info.groupname = string(grp->gr_name == NULL?"":grp->gr_name);
+	info.uid = pwd->pw_uid;
+	return true;
+}
+
 bool addUser(int & error_status, string username, string password, string homedir, string shell, string groupname)
 {
 	error_status = 0;
@@ -150,4 +166,43 @@ bool delUserFromGroup(string username, string groupname)
 {
 	vector<string> args{"gpasswd", "-d", username, groupname};
 	return execvp_fork("gpasswd", args) == 0;
+}
+
+/// reads the quota from user username.
+/// if filesystem is not given, the device of user's homedir will be used.
+quotadata getUserQuotaData(string username, string filesystem)
+{
+	quotadata result;
+	int error_status = 0;
+	userinfo uinfo;
+	if(!infoUser(error_status, username, uinfo)) return result;
+	char* c_mountpoint = NULL;
+	string answer, line, path_to_read;
+	if(filesystem != "") path_to_read = filesystem;
+	else path_to_read = uinfo.homedir;
+	if(getmntpt(path_to_read.c_str(), c_mountpoint) != 0)
+	{
+		free(c_mountpoint);
+		return result;
+	}
+	string mountpoint = string(c_mountpoint);
+	free(c_mountpoint);
+	vector<string> args{"-d", "-u", mountpoint};
+	answer = pexec_read("quotatool", args);
+	regex rex_quotaline("(\\d+) ([\\w/]+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+)");
+	smatch sm;
+	stringstream strs(answer);
+	if(!answer.empty())
+	{
+		while(getline(strs, line, '\n'))
+		{
+			if(regex_match(line, sm, rex_quotaline)) result.username = username, result.device = sm.str(2), result.blocks_used = stoull(sm.str(3)), result.block_softlimit = stoull(sm.str(4)), result.block_hardlimit = stoull(sm.str(5)), result.inodes_used = stoull(sm.str(7)), result.inode_softlimit = stoull(sm.str(8)), result.inode_hardlimit = stoull(sm.str(9));
+		}
+	}
+	return result;
+}
+
+bool setUserQuotaData(quotadata qd)
+{
+	return false;
 }
