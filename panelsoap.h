@@ -3,9 +3,7 @@
 #define __panelsoap__
 
 #import "stlvector.h"
-#import "vhost_type.h"
-#import "vhost.h"
-#import "usergroupinfo.h"
+#import "types.h"
 
 //gsoap ns2 schema namespace:   urn:ns
 //gsoap ns2 schema form:        unqualified
@@ -66,6 +64,12 @@ int ns__addGroup(std::string groupname, bool& response);
 
 //gsoap ns2 service method-action:      delGroup "" 
 int ns__delGroup(std::string groupname, bool& response);
+
+//gsoap ns2 service method-action:      getUserQuotaData ""
+int ns__getUserQuotaData(std::string username, std::string filesystem = "", quotadata& response);
+
+//gsoap ns2 service method-action:      setUserQuotaData ""
+int ns__setUserQuotaData(quotadata qd, bool& response);
 
 //gsoap ns2 service method-action:      getAllVhosts "" 
 int ns__getAllVhosts(std::vector<std::string>& response);

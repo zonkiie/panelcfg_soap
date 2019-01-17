@@ -159,7 +159,7 @@ vector<string> getGroupMembers(string groupname)
 bool addUserToGroup(string username, string groupname)
 {
 	vector<string> args{"usermod", "-a", "-G", groupname, username};
-	return execvp_fork("groupdel", args) == 0;
+	return execvp_fork("usermod", args) == 0;
 }
 
 bool delUserFromGroup(string username, string groupname)
@@ -204,5 +204,23 @@ quotadata getUserQuotaData(string username, string filesystem)
 
 bool setUserQuotaData(quotadata qd)
 {
-	return false;
+	userinfo uinfo;
+	int error_status;
+	if(!infoUser(error_status, qd.username, uinfo)) return false;
+	char* c_mountpoint = NULL;
+	string answer, line, path_to_read;
+	if(qd.device != "") path_to_read = qd.device;
+	else path_to_read = uinfo.homedir;
+	if(getmntpt(path_to_read.c_str(), c_mountpoint) != 0)
+	{
+		free(c_mountpoint);
+		return false;
+	}
+	string mountpoint = string(c_mountpoint);
+	free(c_mountpoint);
+	vector<string> args{"quotatool", "-u", to_string(uinfo.uid), "-b", "-l", to_string(qd.block_hardlimit), "-q", to_string(qd.block_softlimit), mountpoint};
+	if(execvp_fork("quotatool", args) != 0) return false;
+	args = {"quotatool", "-u", to_string(uinfo.uid), "-i", "-l", to_string(qd.inode_hardlimit), "-q", to_string(qd.inode_softlimit), mountpoint};
+	if(execvp_fork("quotatool", args) != 0) return false;
+	return true;
 }

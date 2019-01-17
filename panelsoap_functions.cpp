@@ -86,8 +86,8 @@ int ns__delUser(struct soap* soap, string username, bool& response)
 int ns__infoUser(struct soap* soap, string username, userinfo& uinfo)
 {
 	if(!check_auth(soap)) return 403;
-	int error_status, uid;
-	if(infoUser(error_status, username, info) == false) return error_status;
+	int error_status;
+	if(infoUser(error_status, username, uinfo) == false) return error_status;
 	return SOAP_OK;
 }
 
@@ -130,6 +130,20 @@ int ns__setGroupMembers(struct soap* soap, string groupname, vector<string> memb
 {
 	if(!check_auth(soap)) return 403;
 	response = setGroupMembers(groupname, members);
+	return SOAP_OK;
+}
+
+int ns__getUserQuotaData(struct soap* soap, string username, string filesystem, quotadata& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = getUserQuotaData(username, filesystem);
+	return SOAP_OK;
+}
+
+int ns__setUserQuotaData(struct soap* soap, quotadata qd, bool& response)
+{
+	if(!check_auth(soap)) return 403;
+	response = setUserQuotaData(qd);
 	return SOAP_OK;
 }
 

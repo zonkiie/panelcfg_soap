@@ -366,7 +366,7 @@ vector<string> getFileList(string path)
 /// @see https://stackoverflow.com/questions/26046949/find-the-device-or-mountpoint-of-arbitrary-files-on-linux-using-c
 int getmntpt(char const  *path, char *mount_point)
 {
-	char *test_path = malloc(PATH_MAX), *test_end;
+	char *test_path = (char*)malloc(PATH_MAX), *test_end;
 	struct stat cur_stat, prev_stat;
 
 	if (lstat(path, &prev_stat) < 0)
