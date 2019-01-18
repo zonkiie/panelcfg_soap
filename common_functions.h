@@ -36,6 +36,7 @@ bool check_credentials(struct soap* , struct passwd** );
 bool check_password(string , string);
 bool check_auth(struct soap*);
 vector<string> getFileList(string);
-int getmntpt(char const  *, char *);
+char* devname_from_procpartitions(int, int);
+char* getdev(const char *);
 
 #endif

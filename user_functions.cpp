@@ -177,17 +177,18 @@ quotadata getUserQuotaData(string username, string filesystem)
 	userinfo uinfo;
 	if(!infoUser(error_status, username, uinfo)) return result;
 	char* c_mountpoint = NULL;
-	string answer, line, path_to_read;
+	string answer, line, path_to_read, mountpoint;
 	if(filesystem != "") path_to_read = filesystem;
 	else path_to_read = uinfo.homedir;
-	if(getmntpt(path_to_read.c_str(), c_mountpoint) != 0)
+	if(NULL == (c_mountpoint = getdev(path_to_read.c_str())))
 	{
 		free(c_mountpoint);
 		return result;
 	}
-	string mountpoint = string(c_mountpoint);
+	if(c_mountpoint != NULL) mountpoint = string(c_mountpoint);
 	free(c_mountpoint);
-	vector<string> args{"-d", "-u", mountpoint};
+	if(mountpoint == "") return result;
+	vector<string> args{"-d", "-u", to_string(uinfo.uid), mountpoint};
 	answer = pexec_read("quotatool", args);
 	regex rex_quotaline("(\\d+) ([\\w/]+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+)");
 	smatch sm;
@@ -208,16 +209,17 @@ bool setUserQuotaData(quotadata qd)
 	int error_status;
 	if(!infoUser(error_status, qd.username, uinfo)) return false;
 	char* c_mountpoint = NULL;
-	string answer, line, path_to_read;
+	string answer, line, path_to_read, mountpoint;
 	if(qd.device != "") path_to_read = qd.device;
 	else path_to_read = uinfo.homedir;
-	if(getmntpt(path_to_read.c_str(), c_mountpoint) != 0)
+	if(NULL == (c_mountpoint = getdev(path_to_read.c_str())))
 	{
 		free(c_mountpoint);
 		return false;
 	}
-	string mountpoint = string(c_mountpoint);
+	if(c_mountpoint != NULL) mountpoint = string(c_mountpoint);
 	free(c_mountpoint);
+	if(mountpoint == "") return false;
 	vector<string> args{"quotatool", "-u", to_string(uinfo.uid), "-b", "-l", to_string(qd.block_hardlimit), "-q", to_string(qd.block_softlimit), mountpoint};
 	if(execvp_fork("quotatool", args) != 0) return false;
 	args = {"quotatool", "-u", to_string(uinfo.uid), "-i", "-l", to_string(qd.inode_hardlimit), "-q", to_string(qd.inode_softlimit), mountpoint};
