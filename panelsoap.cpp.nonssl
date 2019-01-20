@@ -4,11 +4,10 @@
 
 int run = 1;
 int sigcount = 0;
-int ssl = 1;
 
 void terminate(int sig)
 {
-	if(sig == SIGINT || sig == SIGTERM || sig == SIGPIPE)
+	if(sig == SIGINT || sig == SIGTERM)
 	{
 		run = 0;
 		sigcount++;
@@ -31,7 +30,106 @@ void set_signal_handlers()
 
 	sigaction(SIGINT, &act, NULL);
 	sigaction(SIGTERM, &act, NULL);
-	sigaction(SIGPIPE, &act, NULL);
+
+}
+
+int start_cgi()
+{
+	struct soap *soap = soap_new();
+	soap->authrealm = "panelsoap";
+	return soap_serve(soap);
+	//return soap_serve(soap_new());
+	//start_service();
+}
+
+int start_mt(int argc, char **argv) 
+{
+  set_signal_handlers();
+  progpath = argv[0];
+  progdir = dirname(progpath);
+  struct soap soap; 
+  soap_init(&soap);
+  soap.fget = http_get;
+  soap.bind_flags |= SO_REUSEADDR | SO_REUSEPORT;
+  soap.authrealm = "panelsoap";
+  if (argc < 2) // no args: assume this is a CGI application 
+  {
+    soap_serve(&soap);   // serve request, one thread, CGI style 
+    soap_destroy(&soap); // delete allocated class instances 
+    soap_end(&soap);     // delete allocated data and temporaries 
+  } 
+  else 
+  {
+    struct soap *soap_thr[MAX_THR]; // each thread needs a context 
+    THREAD_TYPE tid[MAX_THR];       // array of thread IDs
+    int port = atoi(argv[1]);       // first command-line arg is port 
+    SOAP_SOCKET m, s; 
+    int i; 
+    soap.send_timeout = 10;     // 10 seconds max socket delay 
+    soap.recv_timeout = 10;     // 10 seconds max socket delay 
+    soap.accept_timeout = 3600; // server stops after 1 hour of inactivity 
+    soap.max_keep_alive = 100;  // max keep-alive sequence 
+    m = soap_bind(&soap, NULL, port, BACKLOG); 
+    if (!soap_valid_socket(m)) 
+      exit(EXIT_FAILURE);
+    fprintf(stderr, "Socket connection successful %d\n", m); 
+    for (i = 0; i < MAX_THR; i++) 
+      soap_thr[i] = NULL; 
+    while (1)
+    {
+      for (i = 0; i < MAX_THR; i++) 
+      {
+        s = soap_accept(&soap); 
+        if (soap_valid_socket(s)) 
+        {
+          fprintf(stderr, "Thread %d accepts socket %d connection from IP %ld.%ld.%ld.%ld\n", i, s, (soap.ip>>24)&0xFF, (soap.ip>>16)&0xFF, (soap.ip>>8)&0xFF, soap.ip&0xFF); 
+          if (!soap_thr[i]) // first time around 
+          {
+            soap_thr[i] = soap_copy(&soap); 
+            if (!soap_thr[i]) 
+              exit(EXIT_FAILURE); // could not allocate 
+          } 
+          else // recycle threaded soap contexts
+          {
+            // optionally, we can cancel the current thread when stuck on IO:
+            // soap_close_connection(soap_thr[i]); // requires compiling 2.8.71 or greater with -DWITH_SELF_PIPE
+            THREAD_JOIN(tid[i]); 
+            fprintf(stderr, "Thread %d completed\n", i); 
+            soap_destroy(soap_thr[i]);            // delete allocated class instances of thread 
+            soap_end(soap_thr[i]);                // delete allocated data and temporaries of thread 
+            soap_copy_stream(soap_thr[i], &soap); // pass the connection on to the thread
+          } 
+          while (THREAD_CREATE(&tid[i], (void*(*)(void*))soap_serve, (void*)soap_thr[i]))
+            sleep(1); // failed, try again
+        }
+        else if (soap.errnum) // accept failed, try again after 1 second
+        {
+          soap_print_fault(&soap, stderr); 
+          sleep(1);
+        } 
+        else
+        {
+          fprintf(stderr, "Server timed out\n"); 
+          goto end;
+        } 
+      } 
+    } 
+end:
+    for (i = 0; i < MAX_THR; i++) 
+    {
+      if (soap_thr[i]) 
+      {
+        THREAD_JOIN(tid[i]); 
+        soap_destroy(soap_thr[i]);
+        soap_end(soap_thr[i]);
+        soap_free(soap_thr[i]);
+      }
+    }
+  } 
+  soap_destroy(&soap);
+  soap_end(&soap);
+  soap_done(&soap);
+  return 0; 
 }
 
 void *process_queue(void*); 
@@ -52,8 +150,7 @@ int start_mt_queue(int argc, char **argv)
 	atexit(soap_cleanup);
 	progpath = argv[0];
 	progdir = dirname(progpath);
-	//struct soap soap;
-	
+	//struct soap soap; 
 	soap_init(&soap);
 	soap.fget = http_get;
 	soap.bind_flags |= SO_REUSEADDR | SO_REUSEPORT;
@@ -66,29 +163,6 @@ int start_mt_queue(int argc, char **argv)
 	} 
 	else 
 	{
-		if(ssl)
-		{
-			soap_ssl_init();
-			if (CRYPTO_thread_setup()) /* OpenSSL thread mutex setup */
-			{
-				fprintf(stderr, "Cannot setup thread mutex\n");
-				exit(EXIT_FAILURE);
-			}
-			if (soap_ssl_server_context(soap, 
-				SOAP_SSL_DEFAULT, 
-				"server.pem",      /* keyfile: required when server must authenticate to clients (see SSL docs on how to obtain this file) */ 
-				NULL,        /* password to read the key file (not used with GNUTLS) */ 
-				NULL,      /* optional cacert file to store trusted certificates */ 
-				NULL,              /* optional capath to directory with trusted certificates */ 
-				"512",       /* DH file name or DH key len bits (minimum is 512, e.g. "512") to generate DH param, if NULL use RSA */ 
-				NULL,              /* if randfile!=NULL: use a file with random data to seed randomness */  
-				NULL               /* optional server identification to enable SSL session cache (must be a unique name) */
-			)) 
-			{
-				soap_print_fault(soap, stderr); 
-				exit(EXIT_FAILURE); 
-			}
-		}
 		//struct soap *soap_thr[MAX_THR]; // each thread needs a context 
 		//THREAD_TYPE tid[MAX_THR]; 
 		int port = atoi(argv[1]); // first command-line arg is port 
@@ -113,7 +187,7 @@ int start_mt_queue(int argc, char **argv)
 		} 
 		while (run)
 		{
-			s = soap_accept(&soap);
+			s = soap_accept(&soap); 
 			if (soap_valid_socket(s)) 
 			{
 				if(debug) fprintf(stderr, "Thread %d accepts socket %d connection from IP %ld.%ld.%ld.%ld\n", i, s, (soap.ip>>24)&0xFF, (soap.ip>>16)&0xFF, (soap.ip>>8)&0xFF, soap.ip&0xFF); 
@@ -157,8 +231,7 @@ void *process_queue(void *soap)
 		tsoap->socket = dequeue(); 
 		if (!soap_valid_socket(tsoap->socket)) 
 			break; 
-		if (ssl && soap_ssl_accept(soap) == SOAP_OK) soap_serve(tsoap);
-		else soap_serve(tsoap);
+		soap_serve(tsoap); 
 		soap_destroy(tsoap); 
 		soap_end(tsoap); 
 		if(debug) fprintf(stderr, "served\n"); 
@@ -212,7 +285,6 @@ void soap_cleanup()
 	soap_end(&soap);
 	soap_done(&soap);
 	soap_force_closesock(&soap);
-	if(ssl) CRYPTO_thread_cleanup();
 }
 
 int main(int argc, char **argv)
