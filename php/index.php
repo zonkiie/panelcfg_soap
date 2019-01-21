@@ -22,6 +22,7 @@ $client = new SoapClient($wsdl_url,
 		'style'=> SOAP_RPC,
 		'use'      => SOAP_LITERAL,
 		'connection_timeout'=>10,
+		'local_cert'  => "",
 	)
 );
 var_dump($client->__getFunctions());

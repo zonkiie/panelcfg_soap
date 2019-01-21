@@ -74,7 +74,7 @@ int start_mt_queue(int argc, char **argv)
 				fprintf(stderr, "Cannot setup thread mutex\n");
 				exit(EXIT_FAILURE);
 			}
-			if (soap_ssl_server_context(soap, 
+			if (soap_ssl_server_context(&soap, 
 				SOAP_SSL_DEFAULT, 
 				"server.pem",      /* keyfile: required when server must authenticate to clients (see SSL docs on how to obtain this file) */ 
 				NULL,        /* password to read the key file (not used with GNUTLS) */ 
@@ -85,7 +85,7 @@ int start_mt_queue(int argc, char **argv)
 				NULL               /* optional server identification to enable SSL session cache (must be a unique name) */
 			)) 
 			{
-				soap_print_fault(soap, stderr); 
+				soap_print_fault(&soap, stderr); 
 				exit(EXIT_FAILURE); 
 			}
 		}
@@ -157,7 +157,7 @@ void *process_queue(void *soap)
 		tsoap->socket = dequeue(); 
 		if (!soap_valid_socket(tsoap->socket)) 
 			break; 
-		if (ssl && soap_ssl_accept(soap) == SOAP_OK) soap_serve(tsoap);
+		if (ssl && soap_ssl_accept(tsoap) == SOAP_OK) soap_serve(tsoap);
 		else soap_serve(tsoap);
 		soap_destroy(tsoap); 
 		soap_end(tsoap); 

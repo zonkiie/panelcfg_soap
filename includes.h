@@ -41,16 +41,22 @@ using namespace std;
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/program_options/config.hpp>
+#include <boost/program_options/cmdline.hpp>
+#include <boost/program_options/option.hpp>
+
 //#include <boost/process.hpp>
 namespace pt = boost::property_tree;
 namespace bs = boost::system;
 //using namespace boost::system;
 namespace filesys = boost::filesystem;
 namespace ba = boost::algorithm;
+namespace po = boost::program_options;
 
 #include <common_functions.h>
 #include <misc_soap_functions.h>
 #include <apache_functions.h>
 #include <user_functions.h>
+#include <soap_ssl_helpers.h>
 
 #endif
