@@ -4,7 +4,7 @@
 
 int run = 1;
 int sigcount = 0;
-int ssl = 1;
+int ssl = 0;
 
 void terminate(int sig)
 {

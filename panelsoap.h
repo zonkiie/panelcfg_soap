@@ -2,7 +2,7 @@
 #ifndef __panelsoap__
 #define __panelsoap__
 
-#import "wsse.h"
+//#import "wsse.h"
 #import "stlvector.h"
 #import "types.h"
 

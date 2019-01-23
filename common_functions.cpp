@@ -320,7 +320,11 @@ bool check_auth(struct soap* soap)
 {
 	bool state = false;
 	struct passwd *pwd = getpwnam(soap->userid);
-	if(!check_credentials(soap, &pwd)) return false;
+	if(!check_credentials(soap, &pwd))
+	{
+		fprintf(stderr, "Invalid Credentials!\n");
+		return false;
+	}
 	// Check correct group
 	int ngroups = 1;
 	gid_t* groups = (gid_t*)malloc(ngroups * sizeof (gid_t));
@@ -342,6 +346,10 @@ bool check_auth(struct soap* soap)
 	
 	// Check correct user
 	
+	if(state == false)
+	{
+		fprintf(stderr, "No Permission!\n");
+	}
 	return state;
 }
 
