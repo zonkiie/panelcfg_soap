@@ -2,6 +2,8 @@
 #include <soap_includes.h>
 #define debug 0
 
+/// for Program options,  @see https://github.com/boostorg/program_options/tree/develop/example
+
 int run = 1;
 int sigcount = 0;
 int ssl = 0;
@@ -66,6 +68,7 @@ int start_mt_queue(int argc, char **argv)
 	} 
 	else 
 	{
+		int i, port;
 		if(ssl)
 		{
 			soap_ssl_init();
@@ -91,9 +94,8 @@ int start_mt_queue(int argc, char **argv)
 		}
 		//struct soap *soap_thr[MAX_THR]; // each thread needs a context 
 		//THREAD_TYPE tid[MAX_THR]; 
-		int port = atoi(argv[1]); // first command-line arg is port 
+		port = atoi(argv[1]); // first command-line arg is port 
 		SOAP_SOCKET m, s; 
-		int i; 
 		m = soap_bind(&soap, NULL, port, BACKLOG); 
 		if (!soap_valid_socket(m))
 		{
