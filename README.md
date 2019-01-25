@@ -24,6 +24,13 @@ On the developer's machine for example the compiled program would not start beca
 If a user is in the group "admin", he gets all permissions to the operations.
 Later, the privileged users will be configurable.
 
+## Program Start
+
+Now, the program is started by:
+panelsoap.cgi --port=8080 (If you choose port 8080)
+
+
+
 ## References to other tools
 
 A lot of code comes from libzbcl, another project which I develop.

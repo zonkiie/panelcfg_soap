@@ -7,6 +7,8 @@
 int run = 1;
 int sigcount = 0;
 int ssl = 0;
+extern char *optarg;
+extern int optind, opterr, optopt;
 
 void terminate(int sig)
 {
@@ -68,7 +70,71 @@ int start_mt_queue(int argc, char **argv)
 	} 
 	else 
 	{
-		int i, port;
+		int i, port = -1;
+		int show_help = 0;
+		int option_index = 0, c = 0;
+		char * keyfile = NULL, * keypass = NULL, *cacertfile = NULL, *capath = NULL, *dh = NULL, *randfile = NULL, *serverid = NULL;
+		while(1)
+		{
+			static struct option long_options[] = {
+				{"help", no_argument, &show_help, 1},
+				{"ssl", no_argument, &ssl, 1},
+				{"port", required_argument, 0, 0},
+				{"keyfile", required_argument, 0, 0},
+				{"keypass", required_argument, 0, 0},
+				{"cacertfile", required_argument, 0, 0},
+				{"capath", required_argument, 0, 0},
+				{"dh", required_argument, 0, 0},
+				{"randfile", required_argument, 0, 0},
+				{"serverid", required_argument, 0, 0},
+				{0, 0, 0, 0}
+			};
+			c = getopt_long (argc, argv, "h",
+						long_options, &option_index);
+			if(c == -1) break;
+			switch(c)
+			{
+				case 0:
+				{
+					char* oname = (char*)long_options[option_index].name;
+					if(!strcmp(oname, "port")) port = atoi(optarg);
+					if(!strcmp(oname, "keyfile")) keyfile = strdupa(optarg);
+					if(!strcmp(oname, "keypass")) keypass = strdupa(optarg);
+					if(!strcmp(oname, "cacertfile")) cacertfile = strdupa(optarg);
+					if(!strcmp(oname, "capath")) capath = strdupa(optarg);
+					if(!strcmp(oname, "dh")) dh = strdupa(optarg);
+					if(!strcmp(oname, "randfile")) randfile = strdupa(optarg);
+					if(!strcmp(oname, "serverid")) serverid = strdupa(optarg);
+					break;
+				}
+				case 1:
+				{
+					break;
+				}
+				case 'h':
+				{
+					show_help = 1;
+					break;
+				}
+				
+				default:
+					abort();
+			}
+		}
+		if(show_help)
+		{
+			puts("--ssl: enable ssl");
+			puts("--port=<port>: listen on port <port>");
+			puts("--keyfile=<keyfile>");
+			puts("--keypass=<keypass>");
+			puts("--cacertfile=<cacertfile>");
+			puts("--capath=<capath>");
+			puts("--dh=<dh>");
+			puts("--randfile=<randfile>");
+			puts("--serverid=<serverid>");
+			exit(0);
+		}
+		
 		if(ssl)
 		{
 			soap_ssl_init();
@@ -79,13 +145,13 @@ int start_mt_queue(int argc, char **argv)
 			}
 			if (soap_ssl_server_context(&soap, 
 				SOAP_SSL_DEFAULT, 
-				"server.pem",      /* keyfile: required when server must authenticate to clients (see SSL docs on how to obtain this file) */ 
-				NULL,        /* password to read the key file (not used with GNUTLS) */ 
-				NULL,      /* optional cacert file to store trusted certificates */ 
-				NULL,              /* optional capath to directory with trusted certificates */ 
-				"512",       /* DH file name or DH key len bits (minimum is 512, e.g. "512") to generate DH param, if NULL use RSA */ 
-				NULL,              /* if randfile!=NULL: use a file with random data to seed randomness */  
-				NULL               /* optional server identification to enable SSL session cache (must be a unique name) */
+				keyfile,     /* keyfile: required when server must authenticate to clients (see SSL docs on how to obtain this file) */ 
+				keypass,     /* password to read the key file (not used with GNUTLS) */ 
+				cacertfile,  /* optional cacert file to store trusted certificates */ 
+				capath,      /* optional capath to directory with trusted certificates */ 
+				dh,          /* DH file name or DH key len bits (minimum is 512, e.g. "512") to generate DH param, if NULL use RSA */ 
+				randfile,    /* if randfile!=NULL: use a file with random data to seed randomness */  
+				serverid     /* optional server identification to enable SSL session cache (must be a unique name) */
 			)) 
 			{
 				soap_print_fault(&soap, stderr); 
@@ -94,7 +160,7 @@ int start_mt_queue(int argc, char **argv)
 		}
 		//struct soap *soap_thr[MAX_THR]; // each thread needs a context 
 		//THREAD_TYPE tid[MAX_THR]; 
-		port = atoi(argv[1]); // first command-line arg is port 
+		//port = atoi(argv[1]); // first command-line arg is port 
 		SOAP_SOCKET m, s; 
 		m = soap_bind(&soap, NULL, port, BACKLOG); 
 		if (!soap_valid_socket(m))
