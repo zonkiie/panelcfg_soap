@@ -70,15 +70,16 @@ int start_mt_queue(int argc, char **argv)
 	} 
 	else 
 	{
-		int i, port = -1;
+		int i, port = -1, dump_config = 0;
 		int show_help = 0;
 		int option_index = 0, c = 0;
-		char * keyfile = NULL, * keypass = NULL, *cacertfile = NULL, *capath = NULL, *dh = NULL, *randfile = NULL, *serverid = NULL;
+		char *keyfile = NULL, *keypass = NULL, *cacertfile = NULL, *capath = NULL, *dh = NULL, *randfile = NULL, *serverid = NULL, *configfile = NULL;
 		while(1)
 		{
 			static struct option long_options[] = {
 				{"help", no_argument, &show_help, 1},
 				{"ssl", no_argument, &ssl, 1},
+				{"dump-config", no_argument, &dump_config, 1},
 				{"port", required_argument, 0, 0},
 				{"keyfile", required_argument, 0, 0},
 				{"keypass", required_argument, 0, 0},
@@ -87,9 +88,10 @@ int start_mt_queue(int argc, char **argv)
 				{"dh", required_argument, 0, 0},
 				{"randfile", required_argument, 0, 0},
 				{"serverid", required_argument, 0, 0},
+				{"configfile", required_argument, 0, 0},
 				{0, 0, 0, 0}
 			};
-			c = getopt_long (argc, argv, "h",
+			c = getopt_long (argc, argv, "hc:",
 						long_options, &option_index);
 			if(c == -1) break;
 			switch(c)
@@ -105,6 +107,7 @@ int start_mt_queue(int argc, char **argv)
 					if(!strcmp(oname, "dh")) dh = strdupa(optarg);
 					if(!strcmp(oname, "randfile")) randfile = strdupa(optarg);
 					if(!strcmp(oname, "serverid")) serverid = strdupa(optarg);
+					if(!strcmp(oname, "configfile")) configfile = strdupa(optarg);
 					break;
 				}
 				case 1:
@@ -116,6 +119,11 @@ int start_mt_queue(int argc, char **argv)
 					show_help = 1;
 					break;
 				}
+				case 'c':
+				{
+					configfile = strdupa(optarg);
+					break;
+				}
 				
 				default:
 					abort();
@@ -123,6 +131,7 @@ int start_mt_queue(int argc, char **argv)
 		}
 		if(show_help)
 		{
+			puts("Command line has priority over Config file!");
 			puts("--ssl: enable ssl");
 			puts("--port=<port>: listen on port <port>");
 			puts("--keyfile=<keyfile>");
@@ -132,6 +141,58 @@ int start_mt_queue(int argc, char **argv)
 			puts("--dh=<dh>");
 			puts("--randfile=<randfile>");
 			puts("--serverid=<serverid>");
+			puts("--configfile=<configfile>, -c=<configfile>");
+			puts("--dump-config");
+			exit(0);
+		}
+		
+		if(configfile)
+		{
+			FILE *f = fopen(configfile, "r");
+			if(f != NULL)
+			{
+				char * key = (char*)alloca(256), * value = (char*)alloca(2048);
+				char *line = NULL;
+				ssize_t linelen;
+				size_t n;
+				while((linelen = ::getline(&line, &n, f)) >= 0)
+				{
+					if(parse_configstring(line, key, value) >= 0)
+					{
+						if(!strcmp(key, "ssl"))
+						{
+							if(!strcasecmp(value, "true") || !strcasecmp(value, "t")) ssl = 1;
+						}
+						if(!strcmp(key, "port") && strcmp(value, "") && port == -1) port = atoi(value);
+						if(!strcmp(key, "keyfile") && keyfile == NULL) keyfile = strdupa(value);
+						if(!strcmp(key, "keypass") && keypass == NULL) keypass = strdupa(value);
+						if(!strcmp(key, "cacertfile") && cacertfile == NULL) cacertfile = strdupa(value);
+						if(!strcmp(key, "capath") && capath == NULL) capath = strdupa(value);
+						if(!strcmp(key, "dh") && dh == NULL) dh = strdupa(value);
+						if(!strcmp(key, "randfile") && randfile == NULL) randfile = strdupa(value);
+						if(!strcmp(key, "serverid") && serverid == NULL) serverid = strdupa(value);
+						
+					}
+					free(line);
+					line = NULL;
+				}
+				fclose(f);
+			} else {
+				fprintf(stderr, "Config file %s not found!\n", configfile);
+				exit(-1);
+			}
+		}
+		if(dump_config)
+		{
+			printf("ssl: %d\n", ssl);
+			printf("port: %d\n", port);
+			printf("keyfile: %s\n", keyfile);
+			printf("keypass: %s\n", keypass);
+			printf("cacertfile: %s\n", cacertfile);
+			printf("capath: %s\n", capath);
+			printf("dh: %s\n", dh);
+			printf("randfile: %s\n", randfile);
+			printf("serverid: %s\n", serverid);
 			exit(0);
 		}
 		

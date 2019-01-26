@@ -38,5 +38,6 @@ bool check_auth(struct soap*);
 vector<string> getFileList(string);
 char* devname_from_procpartitions(int, int);
 char* getdev(const char *);
+int parse_configstring(const char *, char *, char *);
 
 #endif

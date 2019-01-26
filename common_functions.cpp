@@ -424,3 +424,11 @@ char* getdev(const char *path)
 	free(devname);
 	return result;
 }
+
+int parse_configstring(const char * line, char * key, char * value)
+{
+	size_t s;
+	s = sscanf(line, "%[^#^=]=%[^\n]", key, value);
+	if(s <= 0) return -1;
+	else return s;
+}
