@@ -410,13 +410,13 @@ char* devname_from_procpartitions(int major, int minor)
 /// @see https://stackoverflow.com/questions/26046949/find-the-device-or-mountpoint-of-arbitrary-files-on-linux-using-c
 char* getdev(const char *path)
 {
-	int major = -1, minor = -1;
+	int majorid = -1, minorid = -1;
 	struct stat st;
 	if(stat(path, &st) != 0) return NULL;
-	major = major(st.st_dev);
-	minor = minor(st.st_dev);
+	majorid = major(st.st_dev);
+	minorid = minor(st.st_dev);
 	const char* devdir = "/dev/";
-	char* devname = devname_from_procpartitions(major, minor);
+	char* devname = devname_from_procpartitions(majorid, minorid);
 	size_t slen = strlen(devname) + strlen(devdir) + 1;
 	char* result = (char*)malloc(slen);
 	strcpy(result, devdir);
