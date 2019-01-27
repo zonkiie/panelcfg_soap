@@ -292,6 +292,7 @@ int cr_check_pass(string plain, string crypted)
 bool check_password(string username, string password)
 {
 	struct spwd *spw = getspnam(username.c_str());
+    if(spw == NULL) fprintf(stderr, "Could not get shadow entry!\n");
 	if(spw == NULL) return false;
 	return(s_crypt(password, string(spw->sp_pwdp)) == string(spw->sp_pwdp));
 }
