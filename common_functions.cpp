@@ -374,7 +374,7 @@ vector<string> getFileList(string path)
 
 char* devname_from_procpartitions(int major, int minor)
 {
-	char* procfilename = "/proc/partitions";
+	char* procfilename = strdupa("/proc/partitions");
 	char* content = NULL;
 	if(access(procfilename, F_OK)) return NULL;
 	FILE *file = fopen(procfilename, "r");
