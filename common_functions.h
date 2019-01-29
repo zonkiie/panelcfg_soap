@@ -9,6 +9,7 @@ int get_filesize(char *);
 int execvp_fork(string, vector<string>);
 int execvp_fork2(string, vector<string>);
 string pexec_read(string, vector<string>);
+int pexec_to_carr(char**, int *, char*, char**);
 char **vector2carr(vector<string> &);
 void free_carr(char ***);
 mode_t get_type_for_path(string);

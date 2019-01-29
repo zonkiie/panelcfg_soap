@@ -32,16 +32,16 @@ try{
 	#print_r($client->getusers());
 	#print_r($client->soapinfo());
 	#print_r($client->userExists(array("username"=>"root")));
-	print_r($client->addUser(array("username"=>"sample", "password"=>"sample1", "homedir"=>"", "shell"=>"", "groupname"=>"")));
-	print_r($client->infoUser(array("username"=>"sample")));
-	print_r($client->getUserQuotaData(array("username"=>"sample")));
-	print_r($client->setUserQuotaData(array("qd"=>array("device"=>"", "groupname"=>"", "username"=>"sample", "block-softlimit"=>"10000", "block-hardlimit"=>"10000", "inode-softlimit"=>"100", "inode-hardlimit"=>"100", "blocks-used"=>0, "inodes-used"=>0))));
+	#print_r($client->addUser(array("username"=>"sample", "password"=>"sample1", "homedir"=>"", "shell"=>"", "groupname"=>"")));
+	#print_r($client->infoUser(array("username"=>"sample")));
+	#print_r($client->getUserQuotaData(array("username"=>"sample")));
+	#print_r($client->setUserQuotaData(array("qd"=>array("device"=>"", "groupname"=>"", "username"=>"sample", "block-softlimit"=>"10000", "block-hardlimit"=>"10000", "inode-softlimit"=>"100", "inode-hardlimit"=>"100", "blocks-used"=>0, "inodes-used"=>0))));
 	
-	print_r($client->getUserQuotaData(array("username"=>"sample")));
+	#print_r($client->getUserQuotaData(array("username"=>"sample")));
 	#print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample1")));
 	#print_r($client->changePassword(array("username"=>"sample", "password"=>"sample2")));
 	#print_r($client->checkPassword(array("username"=>"sample", "password"=>"sample2")));
-	print_r($client->delUser(array("username"=>"sample")));
+	#print_r($client->delUser(array("username"=>"sample")));
 	#print_r($client->getUserGroupMembership(array("username"=>"admin")));
 	#print_r($client->getGroupMembers(array("groupname"=>"admin")));
 	#print_r($client->addGroup(array("groupname"=>"samplegroup")));
@@ -57,6 +57,7 @@ try{
 	#print_r($client->addVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de", "documentRoot"=>"/home/rainer/Programmierung/cpp")));
 	#print_r($client->delVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de")));
 	#print_r($client->listSysRoot());
+	print_r($client->listSysRootC());
 }
 catch(Exception $e)
 {

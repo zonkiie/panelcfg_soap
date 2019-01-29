@@ -118,6 +118,65 @@ string pexec_read(string command, vector<string> args)
 	return(retstr);
 }
 
+int pexec_to_carr(char** buf, int *output_length, char* command, char** args)
+{
+    char * ncommand = strdup(command);
+    char ** nargs = (char**)malloc(sizeof(char**)*2);
+    nargs[0] = strdup(basename(ncommand));
+    int i = 0;
+    while(args[i] != NULL)
+    {
+        nargs = (char**)realloc(nargs, (sizeof(char**)*(i+2)));
+        fprintf(stderr, "args[%d]: %s\n", i, args[i]);
+        nargs[i + 1] = strdup(args[i]);
+        i++;
+    }
+	int link[2];
+	pid_t pid;
+	char buffer[1024];
+	size_t size;
+	FILE *stream;
+	int nbytes, state = -1, pid_child;
+	if (pipe(link)==-1)
+		return -1;
+
+	if ((pid = fork()) == -1)
+		return -1;
+
+	if(pid == 0) {
+		dup2 (link[1], STDOUT_FILENO);
+		close(link[0]);
+		close(link[1]);
+		execv(command, args);
+		return -1;
+	}
+	else
+	{
+        free(ncommand);
+        //free_carr(&nargs);
+		close(link[1]);
+		memset(buffer, 0, sizeof(buffer));
+		stream = open_memstream (&(*buf), &size);
+		while((nbytes = read(link[0], buffer, sizeof(buffer))) > 0)
+		{
+			fputs(buffer, stream);
+			memset(buffer, 0, sizeof(buffer));
+		}
+		memset(buffer, 0, sizeof(buffer));
+		fputc(0, stream);
+		(*output_length) = ftell(stream);
+		fclose(stream);
+		//printf("Output: (%.*s)\n", nbytes, buffer);
+		fprintf(stderr, "Output: %s\n", *buf);
+		fprintf(stderr, "Mallocd Size: %zu, Strlen: %zu\n", malloc_usable_size(*buf), strlen(*buf));
+		do {
+			pid_child = wait(&state);
+		} while(pid != pid_child);
+	}
+	return state;
+	
+}
+
 /**
 *  C++ Vector<string> to C char** Array
 * @param v The vector<string> to be converted

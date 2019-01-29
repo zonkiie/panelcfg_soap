@@ -35,6 +35,9 @@ int ns__checkPassword(std::string username, std::string password, bool& response
 //gsoap ns2 service method-action:      listSysRoot "" 
 int ns__listSysRoot(std::string& response);
 
+//gsoap ns2 service method-action:      listSysRootC "" 
+int ns__listSysRootC(char** response);
+
 //gsoap ns2 service method-action:      addUser "" 
 int ns__addUser(std::string username, std::string password, std::string homedir = "", std::string shell = "", std::string groupname = "", bool& response);
 

@@ -53,6 +53,18 @@ int ns__listSysRoot(struct soap* soap, string& response)
 	return SOAP_OK;
 }
 
+int ns__listSysRootC(struct soap* soap, char** response)
+{
+    char* result = NULL;
+    int len = 0;
+    const char* cargs[] = {"-la", "/", NULL};
+    int state = pexec_to_carr(&result, &len, "ls", (char**)cargs);
+    *response = soap_strdup(soap, result);
+    free(result);
+    if(state != 0) return 500;
+	return SOAP_OK;
+}
+
 int ns__addUser(struct soap* soap, string username, string password, string homedir, string shell, string groupname, bool& response)
 {
 	if(!check_auth(soap)) return 403;

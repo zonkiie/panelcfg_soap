@@ -19,6 +19,7 @@ using namespace std;
 #include <dirent.h>
 #include <getopt.h>
 #include <stdio.h>
+#include <malloc.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
 #include <sys/socket.h>
