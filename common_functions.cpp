@@ -126,11 +126,12 @@ int pexec_to_carr(char** buf, int *output_length, char* command, char** args)
     int i = 0;
     while(args[i] != NULL)
     {
-        nargs = (char**)realloc(nargs, (sizeof(char**)*(i+2)));
-        fprintf(stderr, "args[%d]: %s\n", i, args[i]);
+        nargs = (char**)realloc(nargs, (sizeof(char*)*(i+3)));
+        //fprintf(stderr, "args[%d]: %s\n", i, args[i]);
         nargs[i + 1] = strdup(args[i]);
         i++;
     }
+    nargs[i + 1] = NULL;
 	int link[2];
 	pid_t pid;
 	char buffer[1024];
@@ -147,34 +148,33 @@ int pexec_to_carr(char** buf, int *output_length, char* command, char** args)
 		dup2 (link[1], STDOUT_FILENO);
 		close(link[0]);
 		close(link[1]);
-		execv(command, args);
+		execvp(command, nargs);
 		return -1;
 	}
 	else
 	{
         free(ncommand);
-        //free_carr(&nargs);
+        free_carr(&nargs);
 		close(link[1]);
 		memset(buffer, 0, sizeof(buffer));
 		stream = open_memstream (&(*buf), &size);
 		while((nbytes = read(link[0], buffer, sizeof(buffer))) > 0)
 		{
-			fputs(buffer, stream);
+            fwrite(buffer, 1, nbytes, stream);
 			memset(buffer, 0, sizeof(buffer));
 		}
 		memset(buffer, 0, sizeof(buffer));
 		fputc(0, stream);
 		(*output_length) = ftell(stream);
 		fclose(stream);
-		//printf("Output: (%.*s)\n", nbytes, buffer);
-		fprintf(stderr, "Output: %s\n", *buf);
-		fprintf(stderr, "Mallocd Size: %zu, Strlen: %zu\n", malloc_usable_size(*buf), strlen(*buf));
+		////printf("Output: (%.*s)\n", nbytes, buffer);
+		//fprintf(stderr, "Output: %s\n", *buf);
+		//fprintf(stderr, "Mallocd Size: %zu, Strlen: %zu\n", malloc_usable_size(*buf), strlen(*buf));
 		do {
 			pid_child = wait(&state);
 		} while(pid != pid_child);
 	}
 	return state;
-	
 }
 
 /**
