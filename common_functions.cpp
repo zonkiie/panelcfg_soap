@@ -127,7 +127,6 @@ int pexec_to_carr(char** buf, int *output_length, char* command, char** args)
     while(args[i] != NULL)
     {
         nargs = (char**)realloc(nargs, (sizeof(char*)*(i+3)));
-        //fprintf(stderr, "args[%d]: %s\n", i, args[i]);
         nargs[i + 1] = strdup(args[i]);
         i++;
     }
@@ -167,9 +166,6 @@ int pexec_to_carr(char** buf, int *output_length, char* command, char** args)
 		fputc(0, stream);
 		(*output_length) = ftell(stream);
 		fclose(stream);
-		////printf("Output: (%.*s)\n", nbytes, buffer);
-		//fprintf(stderr, "Output: %s\n", *buf);
-		//fprintf(stderr, "Mallocd Size: %zu, Strlen: %zu\n", malloc_usable_size(*buf), strlen(*buf));
 		do {
 			pid_child = wait(&state);
 		} while(pid != pid_child);
