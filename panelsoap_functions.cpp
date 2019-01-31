@@ -9,6 +9,23 @@ int ns__getusers(struct soap* soap, vector<string>& userlist)
 	return SOAP_OK;
 }
 
+int ns__getusersC(struct soap* soap, char *** userlist)
+{
+    char ** ulist = getUserListC();
+    int i = 0;
+    while(ulist[i] != NULL) {
+        fprintf(stderr, "ulist[%d]: %s\n", i, ulist[i]);
+        i++;
+    }
+    if(copy_carr_to_soap_carr(soap, &(*userlist), ulist) < 0) return 500;
+    i = 0;
+    while(userlist[i] != NULL) {
+        fprintf(stderr, "userlist[%d]: %s\n", i, userlist[i]);
+        i++;
+    }
+    return SOAP_OK;
+}
+
 /// Authentication info seems to only work in standalone mode.
 int ns__soapinfo(struct soap* soap, string & response)
 {

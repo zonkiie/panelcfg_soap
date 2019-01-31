@@ -78,4 +78,12 @@ int http_get(struct soap *soap)
 	return soap_closesock(soap);
 }
 
- 
+int copy_carr_to_soap_carr(struct soap *soap, char *** target, char **source)
+{
+    int arr_size = get_carr_size(source), i = 0;
+    *target = (char**)soap_malloc(soap, sizeof(char**)*(arr_size+2));
+    if(*target == NULL) return -1;
+    for(i = 0; source[i] != NULL; i++) (*target)[i] = soap_strdup(soap, source[i]);
+    return i;
+}
+

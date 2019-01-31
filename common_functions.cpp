@@ -205,6 +205,13 @@ void free_carr(char ***carr)
 	free(*carr);
 }
 
+int get_carr_size(char ** carr)
+{
+    int i = 0;
+    while(carr[i++] != NULL);
+    return i;
+}
+
 mode_t get_type_for_path(string path)
 {
 	struct stat st;

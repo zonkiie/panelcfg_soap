@@ -12,6 +12,7 @@ string pexec_read(string, vector<string>);
 int pexec_to_carr(char**, int *, char*, char**);
 char **vector2carr(vector<string> &);
 void free_carr(char ***);
+int get_carr_size(char **);
 mode_t get_type_for_path(string);
 int access(string, int);
 bool is_special_node(string);

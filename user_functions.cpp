@@ -9,6 +9,21 @@ vector<string> getUserList()
 	return userlist;
 }
 
+char** getUserListC()
+{
+    char ** userlist = (char**)malloc(2);
+    int i = 0;
+    struct passwd *pwd;
+    while((pwd = getpwent()) != NULL)
+    {
+        userlist = (char**)realloc(userlist, sizeof(char**)*(i+3));
+        userlist[i] = strdup(pwd->pw_name);
+        i++;
+    }
+    endpwent();
+    return userlist;
+}
+
 bool delUser(string username)
 {
 	vector<string> args{"userdel", "-r", username};

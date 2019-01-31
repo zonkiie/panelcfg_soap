@@ -20,7 +20,10 @@
 //gsoap ns2 service method-action:      getusers "" 
 int ns__getusers(std::vector<std::string>& userlist);
 
-//gsoap ns2 service method-action:      getusers "" 
+//gsoap ns2 service method-action:      getusersC "" 
+int ns__getusersC(char *** userlist);
+
+//gsoap ns2 service method-action:      soapinfo "" 
 int ns__soapinfo(std::string& response);
 
 //gsoap ns2 service method-action:      infoUser "" 
