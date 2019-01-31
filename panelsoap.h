@@ -21,7 +21,7 @@
 int ns__getusers(std::vector<std::string>& userlist);
 
 //gsoap ns2 service method-action:      getusersC "" 
-int ns__getusersC(char *** userlist);
+int ns__getusersC(ns__array_string* userlist);
 
 //gsoap ns2 service method-action:      soapinfo "" 
 int ns__soapinfo(std::string& response);

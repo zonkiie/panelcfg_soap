@@ -84,6 +84,7 @@ int copy_carr_to_soap_carr(struct soap *soap, char *** target, char **source)
     *target = (char**)soap_malloc(soap, sizeof(char**)*(arr_size+2));
     if(*target == NULL) return -1;
     for(i = 0; source[i] != NULL; i++) (*target)[i] = soap_strdup(soap, source[i]);
+    (*target)[i] = NULL;
     return i;
 }
 

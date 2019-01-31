@@ -21,6 +21,7 @@ char** getUserListC()
         i++;
     }
     endpwent();
+    userlist[i] = NULL;
     return userlist;
 }
 
