@@ -26,6 +26,22 @@ vector<string> get_all_vhosts()
 	return vhosts;
 }
 
+/// @see https://stackoverflow.com/questions/1085083/regular-expressions-in-c-examples/1085120
+char ** get_all_vhosts_c()
+{
+    regex_t regex_vhost, regex_alias;
+    int result;
+    result = regcomp(&regex_vhost, "\\s*port \\d+ namevhost ([^\\s]+) .+", REG_EXTENDED);
+    if(result) return NULL;
+    result = regcomp(&regex_alias, "\\s*alias ([^\\s]+).*", REG_EXTENDED);
+    if(result) return NULL;
+    
+    
+    char ** vhosts = (char**)malloc(sizeof(char**)*2);
+    
+    return vhosts;
+}
+
 vector<vhost> get_all_vhost_data()
 {
 	vector<vhost> vhosts;

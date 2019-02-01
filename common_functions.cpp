@@ -191,6 +191,19 @@ char **vector2carr(vector<string> &v)
 	return(cargs);
 }
 
+int array_push(char ***target_array, char *str)
+{
+	int element_count = 0;
+	if(*target_array == NULL) *target_array = (char**)calloc(sizeof(*target_array), 1);
+	while((*target_array)[element_count] != NULL) element_count++;
+	(*target_array) = (char**)realloc((*target_array), sizeof(**target_array) * (element_count + 2));
+	(*target_array)[element_count] = (char*)calloc(strlen(str) + 2, 1);
+	strcpy((*target_array)[element_count], str);
+	element_count++;
+	(*target_array)[element_count] = NULL;
+	return(element_count);
+}
+
 /**
 *  Iterate through C array and free all Elements
 */

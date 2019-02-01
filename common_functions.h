@@ -11,6 +11,7 @@ int execvp_fork2(string, vector<string>);
 string pexec_read(string, vector<string>);
 int pexec_to_carr(char**, int *, char*, char**);
 char **vector2carr(vector<string> &);
+int array_push(char ***, char *);
 void free_carr(char ***);
 int get_carr_size(char **);
 mode_t get_type_for_path(string);
