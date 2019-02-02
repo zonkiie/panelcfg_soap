@@ -56,7 +56,7 @@ char ** get_all_vhosts_c()
             if(m_vhost[1].rm_so != -1 && m_vhost[1].rm_eo != -1)
             {
                 name = strndupa(line + m_vhost[1].rm_so, m_vhost[1].rm_eo - m_vhost[1].rm_so);
-                array_push(&vhosts, name);
+                if(name != NULL) array_push(&vhosts, name);
             }
         }
         if((regex_match_result = regexec(&regex_alias, line, nr_max_matches, m_alias, 0)) == 0)

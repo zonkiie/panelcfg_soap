@@ -180,6 +180,7 @@ int ns__getAllVhostsC(struct soap* soap, ns__array_string* vhostlist)
     char ** vlist = get_all_vhosts_c();
     if((vhostlist->__size = copy_carr_to_soap_carr(soap, &(vhostlist->__ptr), vlist)) < 0) return 500;
     vhostlist->__offset = 0;
+    for(int i = 0; i < vhostlist->__size; i++) fprintf(stderr, "vhost[%d]: %s\n", i, vhostlist->__ptr[i]);
     free_carr(&vlist);
     return SOAP_OK;
 }
