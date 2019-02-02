@@ -30,7 +30,7 @@ $client = new SoapClient($wsdl_url,
 //var_dump($client->__getTypes());
 try{
 	#print_r($client->getusers());
-	print_r($client->getusersC());
+	#print_r($client->getusersC());
 	#print_r($client->soapinfo());
 	#print_r($client->userExists(array("username"=>"root")));
 	#print_r($client->addUser(array("username"=>"sample", "password"=>"sample1", "homedir"=>"", "shell"=>"", "groupname"=>"")));
@@ -53,6 +53,7 @@ try{
 	#print_r($client->delUser(array("username"=>"sample")));
 	#print_r($client->delGroup(array("groupname"=>"samplegroup")));
 	#print_r($client->getAllVhosts());
+	print_r($client->getAllVhostsC());
 	#print_r($client->getAllVhostData());
 	#print_r($client->getVhostEntryString(array("vhostName"=>"mysite1.de")));
 	#print_r($client->addVhost(array("siteName"=>"mysite1", "vhostName"=>"sub2.mysite1.de", "documentRoot"=>"/home/rainer/Programmierung/cpp")));

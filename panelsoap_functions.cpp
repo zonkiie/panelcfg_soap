@@ -175,6 +175,15 @@ int ns__getAllVhosts(struct soap* soap, vector<string>& response)
 	return SOAP_OK;
 }
 
+int ns__getAllVhostsC(struct soap* soap, ns__array_string* vhostlist)
+{
+    char ** vlist = get_all_vhosts_c();
+    if((vhostlist->__size = copy_carr_to_soap_carr(soap, &(vhostlist->__ptr), vlist)) < 0) return 500;
+    vhostlist->__offset = 0;
+    free_carr(&vlist);
+    return SOAP_OK;
+}
+
 int ns__getAllVhostData(struct soap* soap, vector<vhost>& response)
 {
 	if(!check_auth(soap)) return 403;
