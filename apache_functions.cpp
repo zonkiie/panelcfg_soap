@@ -30,9 +30,10 @@ vector<string> get_all_vhosts()
 /// @see https://www.lemoda.net/c/unix-regex/
 char ** get_all_vhosts_c()
 {
-    char ** vhosts = (char**)malloc(sizeof(char*)*2), * str_ret = NULL, *saveptr1, *line = NULL, *name;
+    char ** vhosts = (char**)calloc(sizeof(char*), 2), * str_ret = NULL, *saveptr1, *line = NULL, *name;
     regex_t regex_vhost, regex_alias;
-    regmatch_t m_vhost[4], m_alias[4];
+    const int nr_max_matches = 3;
+    regmatch_t m_vhost[nr_max_matches], m_alias[nr_max_matches];
     int regex_result, regex_match_result, exec_result, exec_length, lineno = 0;
     const char * apachectl_args[] = {"-t", "-D", "DUMP_VHOSTS", NULL};
     exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", (char**)apachectl_args);
@@ -41,43 +42,33 @@ char ** get_all_vhosts_c()
         free(vhosts);
         return NULL;
     }
-    //char * str_ret_copy = strdupa(str_ret);
-    
-    regex_result = regcomp(&regex_vhost, "namevhost\\s+([^\\s]+)", REGEX_FLAGS);
+    regex_result = regcomp(&regex_vhost, "namevhost\\s+([\\w.-_]+)", REGEX_FLAGS);
     if(regex_result) return NULL;
-    regex_result = regcomp(&regex_alias, "\\s*alias\\s+([^\\s]+).*", REGEX_FLAGS);
+    regex_result = regcomp(&regex_alias, "\\s*alias\\s+([\\w.-_]+).*", REGEX_FLAGS);
     if(regex_result) return NULL;
     
     for(line = strtok_r(str_ret, "\n", &saveptr1); line != NULL; line = strtok_r(NULL, "\n", &saveptr1))
     {
         if(line == NULL) break;
         if(!strcmp("VirtualHost configuration:", line)) continue;
-        char * linedupl = strdup(line);
-        if((regex_match_result = regexec(&regex_vhost, linedupl, sizeof(m_vhost), m_vhost, 0)) == 0) 
+        if((regex_match_result = regexec(&regex_vhost, line, nr_max_matches, m_vhost, 0)) == 0) 
         {
-            //fprintf(stderr, "Code Line: %d, line: %s\n", __LINE__, line);
             if(m_vhost[1].rm_so != -1 && m_vhost[1].rm_eo != -1)
             {
-                fprintf(stderr, "Line: %s, so: %d, eo: %d\n", line, m_vhost[1].rm_so, m_vhost[1].rm_eo);
-                name = strndup(linedupl + m_vhost[1].rm_so, m_vhost[1].rm_eo - m_vhost[1].rm_so + 2);
-                fprintf(stderr, "vhost: %s\n", name);
+                name = strndupa(line + m_vhost[1].rm_so, m_vhost[1].rm_eo - m_vhost[1].rm_so);
                 array_push(&vhosts, name);
             }
         }
-        if((regex_match_result = regexec(&regex_alias, linedupl, sizeof(m_alias), m_alias, 0)) == 0)
+        if((regex_match_result = regexec(&regex_alias, line, nr_max_matches, m_alias, 0)) == 0)
         {
-            //fprintf(stderr, "Code Line: %d, line: %s\n", __LINE__, line);
             if(m_alias[1].rm_so != -1 && m_alias[1].rm_eo != -1)
             {
-                fprintf(stderr, "Line: %s, so: %d, eo: %d\n", line, m_alias[1].rm_so, m_alias[1].rm_eo);
-                name = strndup(linedupl + m_alias[1].rm_so, m_alias[1].rm_eo - m_alias[1].rm_so);
-                fprintf(stderr, "alias: %s\n", name);
+                name = strndupa(line + m_alias[1].rm_so, m_alias[1].rm_eo - m_alias[1].rm_so);
                 if(name != NULL) array_push(&vhosts, name);
             }
         }
-        free(linedupl);
     }
-    
+    free(str_ret);
     regfree(&regex_vhost);
     regfree(&regex_alias);
     return vhosts;
