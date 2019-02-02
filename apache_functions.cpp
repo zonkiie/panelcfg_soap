@@ -5,7 +5,7 @@ vector<string> get_all_vhosts()
 {
 	vector<string> vhosts;
 	vector<string> args{"-t", "-D", "DUMP_VHOSTS"};
-	string result = pexec_read("apache2ctl", args);
+	string result = pexec_read("/usr/sbin/apache2ctl", args);
 	regex rex_vhost("\\s*port \\d+ namevhost ([^\\s]+) .+");
 	regex rex_alias("\\s*alias ([^\\s]+).*");
 	smatch sm;
@@ -30,12 +30,12 @@ vector<string> get_all_vhosts()
 /// @see https://www.lemoda.net/c/unix-regex/
 char ** get_all_vhosts_c()
 {
-    char ** vhosts = (char**)malloc(sizeof(char**)*2), * str_ret = NULL, *saveptr1, *line = NULL, *name;
+    char ** vhosts = (char**)malloc(sizeof(char*)*2), * str_ret = NULL, *saveptr1, *line = NULL, *name;
     regex_t regex_vhost, regex_alias;
-    regmatch_t m_vhost[3], m_alias[3];
+    regmatch_t m_vhost[4], m_alias[4];
     int regex_result, regex_match_result, exec_result, exec_length, lineno = 0;
-    const char * apachectl_args[] = {"-t", "-D", "DUMP_VHOSTS"};
-    exec_result = pexec_to_carr(&str_ret, &exec_length, "apache2ctl", (char**)apachectl_args);
+    const char * apachectl_args[] = {"-t", "-D", "DUMP_VHOSTS", NULL};
+    exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", (char**)apachectl_args);
     if(exec_result != 0) 
     {
         free(vhosts);
@@ -43,32 +43,39 @@ char ** get_all_vhosts_c()
     }
     //char * str_ret_copy = strdupa(str_ret);
     
-    regex_result = regcomp(&regex_vhost, "\\s*port \\d+ namevhost ([^\\s]+) .+", REGEX_FLAGS);
+    regex_result = regcomp(&regex_vhost, "namevhost\\s+([^\\s]+)", REGEX_FLAGS);
     if(regex_result) return NULL;
-    regex_result = regcomp(&regex_alias, "\\s*alias ([^\\s]+).*", REGEX_FLAGS);
+    regex_result = regcomp(&regex_alias, "\\s*alias\\s+([^\\s]+).*", REGEX_FLAGS);
     if(regex_result) return NULL;
     
-    line = strtok_r(str_ret, "\n", &saveptr1);
-    for(lineno = 0; line != NULL; lineno++)
+    for(line = strtok_r(str_ret, "\n", &saveptr1); line != NULL; line = strtok_r(NULL, "\n", &saveptr1))
     {
+        if(line == NULL) break;
         if(!strcmp("VirtualHost configuration:", line)) continue;
-        if((regex_match_result = regexec(&regex_vhost, line, sizeof(m_vhost), m_vhost, 0)) == 0) 
+        char * linedupl = strdup(line);
+        if((regex_match_result = regexec(&regex_vhost, linedupl, sizeof(m_vhost), m_vhost, 0)) == 0) 
         {
-            if(m_vhost[1].rm_so != -1)
+            //fprintf(stderr, "Code Line: %d, line: %s\n", __LINE__, line);
+            if(m_vhost[1].rm_so != -1 && m_vhost[1].rm_eo != -1)
             {
-                name = strndupa(line + m_vhost[1].rm_so, m_vhost[1].rm_so - m_vhost[1].rm_eo);
+                fprintf(stderr, "Line: %s, so: %d, eo: %d\n", line, m_vhost[1].rm_so, m_vhost[1].rm_eo);
+                name = strndup(linedupl + m_vhost[1].rm_so, m_vhost[1].rm_eo - m_vhost[1].rm_so + 2);
+                fprintf(stderr, "vhost: %s\n", name);
                 array_push(&vhosts, name);
             }
         }
-        if((regex_match_result = regexec(&regex_alias, line, sizeof(m_alias), m_alias, 0)) == 0)
+        if((regex_match_result = regexec(&regex_alias, linedupl, sizeof(m_alias), m_alias, 0)) == 0)
         {
-            if(m_alias[1].rm_so != -1)
+            //fprintf(stderr, "Code Line: %d, line: %s\n", __LINE__, line);
+            if(m_alias[1].rm_so != -1 && m_alias[1].rm_eo != -1)
             {
-                name = strndupa(line + m_alias[1].rm_so, m_alias[1].rm_so - m_alias[1].rm_eo);
-                array_push(&vhosts, name);
+                fprintf(stderr, "Line: %s, so: %d, eo: %d\n", line, m_alias[1].rm_so, m_alias[1].rm_eo);
+                name = strndup(linedupl + m_alias[1].rm_so, m_alias[1].rm_eo - m_alias[1].rm_so);
+                fprintf(stderr, "alias: %s\n", name);
+                if(name != NULL) array_push(&vhosts, name);
             }
         }
-        line = strtok_r(NULL, "\n", &saveptr1);
+        free(linedupl);
     }
     
     regfree(&regex_vhost);
@@ -80,7 +87,7 @@ vector<vhost> get_all_vhost_data()
 {
 	vector<vhost> vhosts;
 	vector<string> args{"-t", "-D", "DUMP_VHOSTS"};
-	string result = pexec_read("apache2ctl", args);
+	string result = pexec_read("/usr/sbin/apache2ctl", args);
 	regex rex_vhost("\\s*port (\\d+) namevhost ([^\\s]+) \\((.+)\\)");
 	regex rex_alias("\\s*alias ([^\\s]+).*");
 	smatch sm;

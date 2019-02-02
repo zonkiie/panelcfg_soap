@@ -64,6 +64,6 @@ namespace po = boost::program_options;
 #include <user_functions.h>
 #include <soap_ssl_helpers.h>
 
-const int REGEX_FLAGS = REG_EXTENDED|REG_ICASE|REG_NEWLINE;
+const int REGEX_FLAGS = REG_EXTENDED|REG_ICASE; //|REG_NEWLINE;
 
 #endif
