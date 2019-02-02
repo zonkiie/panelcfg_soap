@@ -20,6 +20,7 @@ using namespace std;
 #include <getopt.h>
 #include <stdio.h>
 #include <malloc.h>
+#include <regex.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -62,5 +63,7 @@ namespace po = boost::program_options;
 #include <apache_functions.h>
 #include <user_functions.h>
 #include <soap_ssl_helpers.h>
+
+const int REGEX_FLAGS = REG_EXTENDED|REG_ICASE|REG_NEWLINE;
 
 #endif

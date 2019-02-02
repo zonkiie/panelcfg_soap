@@ -118,6 +118,14 @@ string pexec_read(string command, vector<string> args)
 	return(retstr);
 }
 
+/**
+ * executes an external program, returns the return value, stores the output to buf and output length to output_length.
+ * @param buf a pointer to the Memory to be allocated and where the result is stored.
+ * @param output_length the length of the output string
+ * @param the command to be executed
+ * @param args arguments for the program. args must not contain the program file name in the first argument.
+ * @returns the exit code or return value of the executed program.
+ */
 int pexec_to_carr(char** buf, int *output_length, char* command, char** args)
 {
     char * ncommand = strdup(command);

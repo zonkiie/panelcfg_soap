@@ -27,18 +27,52 @@ vector<string> get_all_vhosts()
 }
 
 /// @see https://stackoverflow.com/questions/1085083/regular-expressions-in-c-examples/1085120
+/// @see https://www.lemoda.net/c/unix-regex/
 char ** get_all_vhosts_c()
 {
+    char ** vhosts = (char**)malloc(sizeof(char**)*2), * str_ret = NULL, *saveptr1, *line = NULL, *name;
     regex_t regex_vhost, regex_alias;
-    int result;
-    result = regcomp(&regex_vhost, "\\s*port \\d+ namevhost ([^\\s]+) .+", REG_EXTENDED);
-    if(result) return NULL;
-    result = regcomp(&regex_alias, "\\s*alias ([^\\s]+).*", REG_EXTENDED);
-    if(result) return NULL;
+    regmatch_t m_vhost[3], m_alias[3];
+    int regex_result, regex_match_result, exec_result, exec_length, lineno = 0;
+    const char * apachectl_args[] = {"-t", "-D", "DUMP_VHOSTS"};
+    exec_result = pexec_to_carr(&str_ret, &exec_length, "apache2ctl", (char**)apachectl_args);
+    if(exec_result != 0) 
+    {
+        free(vhosts);
+        return NULL;
+    }
+    //char * str_ret_copy = strdupa(str_ret);
     
+    regex_result = regcomp(&regex_vhost, "\\s*port \\d+ namevhost ([^\\s]+) .+", REGEX_FLAGS);
+    if(regex_result) return NULL;
+    regex_result = regcomp(&regex_alias, "\\s*alias ([^\\s]+).*", REGEX_FLAGS);
+    if(regex_result) return NULL;
     
-    char ** vhosts = (char**)malloc(sizeof(char**)*2);
+    line = strtok_r(str_ret, "\n", &saveptr1);
+    for(lineno = 0; line != NULL; lineno++)
+    {
+        if(!strcmp("VirtualHost configuration:", line)) continue;
+        if((regex_match_result = regexec(&regex_vhost, line, sizeof(m_vhost), m_vhost, 0)) == 0) 
+        {
+            if(m_vhost[1].rm_so != -1)
+            {
+                name = strndupa(line + m_vhost[1].rm_so, m_vhost[1].rm_so - m_vhost[1].rm_eo);
+                array_push(&vhosts, name);
+            }
+        }
+        if((regex_match_result = regexec(&regex_alias, line, sizeof(m_alias), m_alias, 0)) == 0)
+        {
+            if(m_alias[1].rm_so != -1)
+            {
+                name = strndupa(line + m_alias[1].rm_so, m_alias[1].rm_so - m_alias[1].rm_eo);
+                array_push(&vhosts, name);
+            }
+        }
+        line = strtok_r(NULL, "\n", &saveptr1);
+    }
     
+    regfree(&regex_vhost);
+    regfree(&regex_alias);
     return vhosts;
 }
 
