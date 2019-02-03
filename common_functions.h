@@ -9,7 +9,7 @@ int get_filesize(char *);
 int execvp_fork(string, vector<string>);
 int execvp_fork2(string, vector<string>);
 string pexec_read(string, vector<string>);
-int pexec_to_carr(char**, int *, char*, char**);
+int pexec_to_carr(char**, int *, const char*, const char**);
 char **vector2carr(vector<string> &);
 int array_push(char ***, char *);
 void free_carr(char ***);

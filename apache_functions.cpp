@@ -34,9 +34,9 @@ char ** get_all_vhosts_c()
     regex_t regex_vhost, regex_alias;
     const int nr_max_matches = 3;
     regmatch_t m_vhost[nr_max_matches], m_alias[nr_max_matches];
-    int regex_result, regex_match_result, exec_result, exec_length, lineno = 0;
+    int regex_result, regex_match_result, exec_result, exec_length;
     const char * apachectl_args[] = {"-t", "-D", "DUMP_VHOSTS", NULL};
-    exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", (char**)apachectl_args);
+    exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", apachectl_args);
     if(exec_result != 0) 
     {
         free(vhosts);

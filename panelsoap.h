@@ -26,6 +26,9 @@ int ns__getusersC(ns__array_string* userlist);
 //gsoap ns2 service method-action:      soapinfo "" 
 int ns__soapinfo(std::string& response);
 
+//gsoap ns2 service method-action:      helloC "" 
+int ns__helloC(ns__array_string* arr);
+
 //gsoap ns2 service method-action:      infoUser "" 
 int ns__infoUser(std::string username, userinfo& uinfo);
 

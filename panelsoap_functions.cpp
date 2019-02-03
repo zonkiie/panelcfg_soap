@@ -39,6 +39,15 @@ int ns__soapinfo(struct soap* soap, string & response)
 	return SOAP_OK;
 }
 
+int ns__helloC(struct soap* soap, ns__array_string* arr)
+{
+    arr->__ptr = (char**)soap_malloc(soap, sizeof(char*) * 2);
+    arr->__ptr[0] = soap_strdup(soap, "Hello!");
+    arr->__ptr[1] = NULL;
+    arr->__size = 1;
+    return SOAP_OK;
+}
+
 int ns__userExists(struct soap* soap, string username, bool& response)
 {
 	struct passwd* pw = getpwnam(username.c_str());
@@ -67,7 +76,7 @@ int ns__listSysRootC(struct soap* soap, char** response)
     char* result = NULL;
     int len = 0;
     const char* cargs[] = {"-la", "/", NULL};
-    int state = pexec_to_carr(&result, &len, "ls", (char**)cargs);
+    int state = pexec_to_carr(&result, &len, "ls", cargs);
     *response = soap_strdup(soap, result);
     free(result);
     if(state != 0) return 500;
@@ -177,10 +186,12 @@ int ns__getAllVhosts(struct soap* soap, vector<string>& response)
 
 int ns__getAllVhostsC(struct soap* soap, ns__array_string* vhostlist)
 {
+	if(!check_auth(soap)) return 403;
     char ** vlist = get_all_vhosts_c();
     if((vhostlist->__size = copy_carr_to_soap_carr(soap, &(vhostlist->__ptr), vlist)) < 0) return 500;
     vhostlist->__offset = 0;
-    for(int i = 0; i < vhostlist->__size; i++) fprintf(stderr, "vhost[%d]: %s\n", i, vhostlist->__ptr[i]);
+    //fprintf(stderr, "length of list: %d\n", vhostlist->__size);
+    //for(int i = 0; i < vhostlist->__size; i++) fprintf(stderr, "vhost[%d]: %s\n", i, vhostlist->__ptr[i]);
     free_carr(&vlist);
     return SOAP_OK;
 }

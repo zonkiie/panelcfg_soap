@@ -126,7 +126,7 @@ string pexec_read(string command, vector<string> args)
  * @param args arguments for the program. args must not contain the program file name in the first argument.
  * @returns the exit code or return value of the executed program.
  */
-int pexec_to_carr(char** buf, int *output_length, char* command, char** args)
+int pexec_to_carr(char** buf, int *output_length, const char* command, const char** args)
 {
     char * ncommand = strdup(command);
     char ** nargs = (char**)malloc(sizeof(char**)*2);
