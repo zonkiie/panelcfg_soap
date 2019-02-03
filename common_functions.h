@@ -42,5 +42,7 @@ vector<string> getFileList(string);
 char* devname_from_procpartitions(int, int);
 char* getdev(const char *);
 int parse_configstring(const char *, char *, char *);
+int cmpstringp(const void *, const void *);
+int make_cstr_array_unique(char ***, char **);
 
 #endif

@@ -25,7 +25,7 @@ $client = new SoapClient($wsdl_url,
 		'local_cert'  => "",
 	)
 );
-var_dump($client->__getFunctions());
+//var_dump($client->__getFunctions());
 //echo "Types:" . PHP_EOL;
 //var_dump($client->__getTypes());
 try{

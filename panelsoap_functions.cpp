@@ -186,12 +186,10 @@ int ns__getAllVhosts(struct soap* soap, vector<string>& response)
 
 int ns__getAllVhostsC(struct soap* soap, ns__array_string* vhostlist)
 {
-	if(!check_auth(soap)) return 403;
+	//if(!check_auth(soap)) return 403;
     char ** vlist = get_all_vhosts_c();
     if((vhostlist->__size = copy_carr_to_soap_carr(soap, &(vhostlist->__ptr), vlist)) < 0) return 500;
     vhostlist->__offset = 0;
-    //fprintf(stderr, "length of list: %d\n", vhostlist->__size);
-    //for(int i = 0; i < vhostlist->__size; i++) fprintf(stderr, "vhost[%d]: %s\n", i, vhostlist->__ptr[i]);
     free_carr(&vlist);
     return SOAP_OK;
 }

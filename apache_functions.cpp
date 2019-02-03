@@ -71,7 +71,12 @@ char ** get_all_vhosts_c()
     free(str_ret);
     regfree(&regex_vhost);
     regfree(&regex_alias);
-    return vhosts;
+    char ** vhosts_sorted_unique = NULL;
+    qsort(vhosts, get_carr_size(vhosts), sizeof(char *), cmpstringp);
+    make_cstr_array_unique(&vhosts_sorted_unique, vhosts);
+    qsort(vhosts_sorted_unique, get_carr_size(vhosts_sorted_unique), sizeof(char *), cmpstringp);
+    free_carr(&vhosts);
+    return vhosts_sorted_unique;
 }
 
 vector<vhost> get_all_vhost_data()

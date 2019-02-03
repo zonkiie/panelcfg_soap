@@ -229,7 +229,7 @@ void free_carr(char ***carr)
 int get_carr_size(char ** carr)
 {
     int i = 0;
-    while(carr[i++] != NULL);
+    for(; carr[i] != NULL; i++);
     return i;
 }
 
@@ -516,3 +516,28 @@ int parse_configstring(const char * line, char * key, char * value)
 	if(s <= 0) return -1;
 	else return s;
 }
+
+int cmpstringp(const void *p1, const void *p2)
+{
+    /* Die tatsächlichen Argumente dieser Funktion sind »Zeiger auf
+        Zeiger auf char«, strcmp(3)-Argumente sind aber »Zeiger auf
+        char«, daher wird im Folgenden umgewandelt und zurückverfolgt*/
+
+    return strcmp(* (char * const *) p1, * (char * const *) p2);
+}
+
+// makes a sorted array of strings unique
+int make_cstr_array_unique(char *** output_array, char ** input_array)
+{
+    int i;
+    *output_array = (char**)calloc(sizeof(char**), 2);
+    for(i = 0; input_array[i] != NULL; i++)
+    {
+        if(input_array[i + 1] != NULL && !strcmp(input_array[i], input_array[i + 1])) continue;
+        else if(input_array[i + 1] != NULL && strcmp(input_array[i], input_array[i + 1])) array_push(output_array, input_array[i]);
+    }
+    if(i > 0) array_push(output_array, input_array[i - 1]);
+    return i;
+}
+    
+    

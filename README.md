@@ -13,7 +13,7 @@ This Program is licensed under the GPLv2 license, the same license as gSOAP.
 
 A g++ version which can compile c++x11 code
 liboost-all
-gsoap
+gsoap (use a newer version, older versions may cause problems with some functions)
 
 The apache tools a2ensite, a2dissite, apache2ctl must be in the /usr/sbin directory, as well as the useradd/usermod/userdel tools.
 
