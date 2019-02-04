@@ -517,6 +517,9 @@ int parse_configstring(const char * line, char * key, char * value)
 	else return s;
 }
 
+/**
+ * Comparator function for qsort
+ */
 int cmpstringp(const void *p1, const void *p2)
 {
     /* Die tatsächlichen Argumente dieser Funktion sind »Zeiger auf

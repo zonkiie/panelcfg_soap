@@ -30,22 +30,19 @@ vector<string> get_all_vhosts()
 /// @see https://www.lemoda.net/c/unix-regex/
 char ** get_all_vhosts_c()
 {
-    char ** vhosts = (char**)calloc(sizeof(char*), 2), * str_ret = NULL, *saveptr1, *line = NULL, *name;
+    char ** vhosts = (char**)calloc(sizeof(char*), 2), * str_ret = NULL, *saveptr1, *line = NULL, *name, **vhosts_sorted_unique = NULL;
     regex_t regex_vhost, regex_alias;
     const int nr_max_matches = 3;
     regmatch_t m_vhost[nr_max_matches], m_alias[nr_max_matches];
     int regex_result, regex_match_result, exec_result, exec_length;
     const char * apachectl_args[] = {"-t", "-D", "DUMP_VHOSTS", NULL};
-    exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", apachectl_args);
-    if(exec_result != 0) 
+    if((exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", apachectl_args)) != 0) 
     {
         free(vhosts);
         return NULL;
     }
-    regex_result = regcomp(&regex_vhost, "namevhost\\s+([\\w.-_]+)", REGEX_FLAGS);
-    if(regex_result) return NULL;
-    regex_result = regcomp(&regex_alias, "\\s*alias\\s+([\\w.-_]+).*", REGEX_FLAGS);
-    if(regex_result) return NULL;
+    if((regex_result = regcomp(&regex_vhost, "namevhost\\s+([\\w.-_]+)", REGEX_FLAGS))) return NULL;
+    if((regex_result = regcomp(&regex_alias, "\\s*alias\\s+([\\w.-_]+).*", REGEX_FLAGS))) return NULL;
     
     for(line = strtok_r(str_ret, "\n", &saveptr1); line != NULL; line = strtok_r(NULL, "\n", &saveptr1))
     {
@@ -71,7 +68,6 @@ char ** get_all_vhosts_c()
     free(str_ret);
     regfree(&regex_vhost);
     regfree(&regex_alias);
-    char ** vhosts_sorted_unique = NULL;
     qsort(vhosts, get_carr_size(vhosts), sizeof(char *), cmpstringp);
     make_cstr_array_unique(&vhosts_sorted_unique, vhosts);
     qsort(vhosts_sorted_unique, get_carr_size(vhosts_sorted_unique), sizeof(char *), cmpstringp);
