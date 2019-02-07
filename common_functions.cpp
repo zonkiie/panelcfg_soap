@@ -542,5 +542,29 @@ int make_cstr_array_unique(char *** output_array, char ** input_array)
     if(i > 0) array_push(output_array, input_array[i - 1]);
     return i;
 }
+
+/**
+ * @returns the number of matches or -1 on error.
+ */
+int extract_from_regex(char *** matches, char * pattern, char * text, int max_matches, int flags)
+{
+    *matches = (char**)calloc(sizeof(char*), 2);
+    char *matchtext;
+    regex_t regex;
+    regmatch_t match[max_matches];
+    int regex_result, regex_match_result, i;
+    if((regex_result = regcomp(&regex, pattern, flags))) return -1;
+    if((regex_match_result = regexec(&regex, text, max_matches, match, 0)) == 0) 
+    {
+        for(i = 1; match[i].rm_so != -1; i++)
+        {
+            matchtext = strndupa(text + match[i].rm_so, match[i].rm_eo - match[i].rm_so);
+            if(matchtext != NULL) array_push(matches, matchtext);
+        }
+    }
     
+    regfree(&regex);
+    return i - 1;
+}
+
     
