@@ -75,6 +75,27 @@ char ** get_all_vhosts_c()
     return vhosts_sorted_unique;
 }
 
+/**
+ * find the site file for an alias or vhost
+ */
+char * get_site_for_vhost(const char * vhost_name)
+{
+    char * site = NULL, * str_ret = NULL, *saveptr1 = NULL, *line = NULL, *name = NULL;
+    regex_t regex_vhost, regex_alias;
+    const int nr_max_matches = 3;
+    regmatch_t m_vhost[nr_max_matches], m_alias[nr_max_matches];
+    int regex_result, regex_match_result, exec_result, exec_length;
+    const char * apachectl_args[] = {"-t", "-D", "DUMP_VHOSTS", NULL};
+    if((exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", apachectl_args)) != 0) 
+    {
+        free(vhosts);
+        return NULL;
+    }
+    if((regex_result = regcomp(&regex_vhost, "namevhost\\s+([\\w.-_]+)", REGEX_FLAGS))) return NULL;
+    if((regex_result = regcomp(&regex_alias, "\\s*alias\\s+([\\w.-_]+).*", REGEX_FLAGS))) return NULL;
+    
+}
+
 vector<vhost> get_all_vhost_data()
 {
 	vector<vhost> vhosts;

@@ -6,6 +6,7 @@
 
 vector<string> get_all_vhosts();
 char ** get_all_vhosts_c();
+char * get_site_for_vhost(const char *);
 vector<vhost> get_all_vhost_data();
 string get_vhost_entry_string(string vhostName);
 vector<string> get_all_sites();

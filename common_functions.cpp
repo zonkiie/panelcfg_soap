@@ -551,7 +551,7 @@ int extract_from_regex(char *** matches, char * pattern, char * text, int max_ma
     *matches = (char**)calloc(sizeof(char*), 2);
     char *matchtext;
     regex_t regex;
-    regmatch_t match[max_matches];
+    regmatch_t match[max_matches + 1];
     int regex_result, regex_match_result, i;
     if((regex_result = regcomp(&regex, pattern, flags))) return -1;
     if((regex_match_result = regexec(&regex, text, max_matches, match, 0)) == 0) 
