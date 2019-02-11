@@ -546,7 +546,7 @@ int make_cstr_array_unique(char *** output_array, char ** input_array)
 /**
  * @returns the number of matches or -1 on error.
  */
-int extract_from_regex(char *** matches, char * pattern, char * text, int max_matches, int flags)
+int cstring_extract_from_regex(char *** matches, const char * pattern, const char * text, int max_matches, int flags)
 {
     *matches = (char**)calloc(sizeof(char*), 2);
     char *matchtext;

@@ -194,6 +194,15 @@ int ns__getAllVhostsC(struct soap* soap, ns__array_string* vhostlist)
     return SOAP_OK;
 }
 
+int ns__getVHostSiteC(struct soap* soap, char * vhostName, char ** response)
+{
+	//if(!check_auth(soap)) return 403;
+    char * site = get_site_for_vhost(vhostName);
+    *response = soap_strdup(soap, site);
+    free(site);
+    return SOAP_OK;
+}
+
 int ns__getAllVhostData(struct soap* soap, vector<vhost>& response)
 {
 	if(!check_auth(soap)) return 403;

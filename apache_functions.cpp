@@ -80,20 +80,41 @@ char ** get_all_vhosts_c()
  */
 char * get_site_for_vhost(const char * vhost_name)
 {
-    char * site = NULL, * str_ret = NULL, *saveptr1 = NULL, *line = NULL, *name = NULL;
-    regex_t regex_vhost, regex_alias;
-    const int nr_max_matches = 3;
-    regmatch_t m_vhost[nr_max_matches], m_alias[nr_max_matches];
-    int regex_result, regex_match_result, exec_result, exec_length;
+    char * site = NULL, *tmp_site = NULL, * str_ret = NULL, *saveptr1 = NULL, *line = NULL, **matches = NULL;
+    int exec_result, exec_length, extract_result;
     const char * apachectl_args[] = {"-t", "-D", "DUMP_VHOSTS", NULL};
     if((exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", apachectl_args)) != 0) 
     {
-        free(vhosts);
         return NULL;
     }
-    if((regex_result = regcomp(&regex_vhost, "namevhost\\s+([\\w.-_]+)", REGEX_FLAGS))) return NULL;
-    if((regex_result = regcomp(&regex_alias, "\\s*alias\\s+([\\w.-_]+).*", REGEX_FLAGS))) return NULL;
-    
+    for(line = strtok_r(str_ret, "\n", &saveptr1); line != NULL; line = strtok_r(NULL, "\n", &saveptr1))
+    {
+        if(line == NULL) break;
+        if(!strcmp("VirtualHost configuration:", line)) continue;
+        if((extract_result = cstring_extract_from_regex(&matches, "namevhost\\s+([\\w.-_]+)\\s+\\(([\\w\\d.-_:/]+)\\)", line, 3, REGEX_FLAGS)) > 1)
+        {
+            fprintf(stderr, "Zeile %d: Matches[0]: %s, Matches[1]: %s\n", __LINE__, matches[0], matches[1]);
+            tmp_site = strdupa(matches[1]);
+            if(!strcmp(matches[0], vhost_name)) 
+            {
+                free_carr(&matches);
+                break;
+            }
+            free_carr(&matches);
+        }
+        if((extract_result = cstring_extract_from_regex(&matches, "\\s*alias\\s+([\\w.-_]+).*", line, 3, REGEX_FLAGS)) > 0)
+        {
+            fprintf(stderr, "Zeile %d: Matches[0]: %s\n", __LINE__, matches[0]);
+            if(!strcmp(matches[0], vhost_name)) 
+            {
+                free_carr(&matches);
+                break;
+            }
+            free_carr(&matches);
+        }
+    }
+    site = strdup(tmp_site);
+    return site;
 }
 
 vector<vhost> get_all_vhost_data()

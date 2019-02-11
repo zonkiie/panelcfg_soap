@@ -44,6 +44,6 @@ char* getdev(const char *);
 int parse_configstring(const char *, char *, char *);
 int cmpstringp(const void *, const void *);
 int make_cstr_array_unique(char ***, char **);
-int extract_from_regex(char ***, char *, char *, int, int);
+int cstring_extract_from_regex(char ***, const char *, const char *, int, int);
 
 #endif
