@@ -83,17 +83,15 @@ char * get_site_for_vhost(const char * vhost_name)
     char * site = NULL, *tmp_site = NULL, * str_ret = NULL, *saveptr1 = NULL, *line = NULL, **matches = NULL;
     int exec_result, exec_length, extract_result;
     const char * apachectl_args[] = {"-t", "-D", "DUMP_VHOSTS", NULL};
-    if((exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", apachectl_args)) != 0) 
-    {
-        return NULL;
-    }
+    if((exec_result = pexec_to_carr(&str_ret, &exec_length, "/usr/sbin/apache2ctl", apachectl_args)) != 0) return NULL;
     for(line = strtok_r(str_ret, "\n", &saveptr1); line != NULL; line = strtok_r(NULL, "\n", &saveptr1))
     {
         if(line == NULL) break;
         if(!strcmp("VirtualHost configuration:", line)) continue;
-        if((extract_result = cstring_extract_from_regex(&matches, "namevhost\\s+([\\w.-_]+)\\s+\\(([\\w\\d.-_:/]+)\\)", line, 3, REGEX_FLAGS)) > 1)
+        //"namevhost\\s+([\\w.-_]+)\\s+\\(([\\w\\d.-_:/]+)\\)"
+        if((extract_result = cstring_extract_from_regex(&matches, "namevhost\\s+([\\w.-_]+)\\s+\\((.+)\\)", line, 3, REGEX_FLAGS)) > 1)
         {
-            fprintf(stderr, "Zeile %d: Matches[0]: %s, Matches[1]: %s\n", __LINE__, matches[0], matches[1]);
+            //fprintf(stderr, "Zeile %d: Matches[0]: %s, Matches[1]: %s\n", __LINE__, matches[0], matches[1]);
             tmp_site = strdupa(matches[1]);
             if(!strcmp(matches[0], vhost_name)) 
             {
@@ -101,19 +99,20 @@ char * get_site_for_vhost(const char * vhost_name)
                 break;
             }
             free_carr(&matches);
-        }
-        if((extract_result = cstring_extract_from_regex(&matches, "\\s*alias\\s+([\\w.-_]+).*", line, 3, REGEX_FLAGS)) > 0)
+        } else free_carr(&matches);
+        if((extract_result = cstring_extract_from_regex(&matches, "\\s*alias\\s+([\\w.-_]+).*", line, 2, REGEX_FLAGS)) > 0)
         {
-            fprintf(stderr, "Zeile %d: Matches[0]: %s\n", __LINE__, matches[0]);
+            //fprintf(stderr, "Zeile %d: Matches[0]: %s\n", __LINE__, matches[0]);
             if(!strcmp(matches[0], vhost_name)) 
             {
                 free_carr(&matches);
                 break;
             }
             free_carr(&matches);
-        }
+        } else free_carr(&matches);
     }
-    site = strdup(tmp_site);
+    free(str_ret);
+    if(tmp_site) site = strdup(tmp_site);
     return site;
 }
 

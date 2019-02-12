@@ -548,16 +548,17 @@ int make_cstr_array_unique(char *** output_array, char ** input_array)
  */
 int cstring_extract_from_regex(char *** matches, const char * pattern, const char * text, int max_matches, int flags)
 {
-    *matches = (char**)calloc(sizeof(char*), 2);
+    *matches = (char**)calloc(sizeof(char**), 2);
     char *matchtext;
     regex_t regex;
     regmatch_t match[max_matches + 1];
-    int regex_result, regex_match_result, i;
+    int regex_result, regex_match_result, i = 1;
     if((regex_result = regcomp(&regex, pattern, flags))) return -1;
     if((regex_match_result = regexec(&regex, text, max_matches, match, 0)) == 0) 
     {
-        for(i = 1; match[i].rm_so != -1; i++)
+        for(i = 1; i < max_matches && match[i].rm_so != -1; i++)
         {
+            //fprintf(stderr, "Text: %s, match[%d].rm_so: %d, match[%d].rm_eo: %d\n", text, i, match[i].rm_so, i, match[i].rm_eo);
             matchtext = strndupa(text + match[i].rm_so, match[i].rm_eo - match[i].rm_so);
             if(matchtext != NULL) array_push(matches, matchtext);
         }
