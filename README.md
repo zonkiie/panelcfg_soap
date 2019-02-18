@@ -14,6 +14,7 @@ This Program is licensed under the GPLv2 license, the same license as gSOAP.
 A g++ version which can compile c++x11 code
 liboost-all
 gsoap (use a newer version, older versions may cause problems with some functions)
+libzbcl
 
 The apache tools a2ensite, a2dissite, apache2ctl must be in the /usr/sbin directory, as well as the useradd/usermod/userdel tools.
 
@@ -35,6 +36,8 @@ panelsoap.cgi --port=8080 (If you choose port 8080)
 
 A lot of code comes from libzbcl, another project which I develop.
 [libzbcl](https://sourceforge.net/projects/zonkiies-big-collection-lib/)
+
+This library will be used in the future more and more.
 
 Sometimes in the future, the functions will be merged to libzbcl and the panelcfg tool will be linked to the library.
 
