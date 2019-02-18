@@ -40,6 +40,10 @@ using namespace std;
 #include <vector>
 #include <list>
 #include <iterator>
+#include <zbcl/plain_c/cfile-functions.h>
+#include <zbcl/plain_c/carray-functions.h>
+#include <zbcl/plain_c/cstring-functions.h>
+#include <zbcl/plain_c/capache-functions-ext.h>
 #include <soapH.h>  // include the generated source code headers
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>

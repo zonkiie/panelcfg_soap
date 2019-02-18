@@ -5,15 +5,12 @@ using namespace std;
 
 extern char * progpath;
 extern char * progdir;
-int get_filesize(char *);
 int execvp_fork(string, vector<string>);
 int execvp_fork2(string, vector<string>);
 string pexec_read(string, vector<string>);
 int pexec_to_carr(char**, int *, const char*, const char**);
 char **vector2carr(vector<string> &);
 int array_push(char ***, char *);
-void free_carr(char ***);
-int get_carr_size(char **);
 mode_t get_type_for_path(string);
 int access(string, int);
 bool is_special_node(string);
@@ -42,8 +39,5 @@ vector<string> getFileList(string);
 char* devname_from_procpartitions(int, int);
 char* getdev(const char *);
 int parse_configstring(const char *, char *, char *);
-int cmpstringp(const void *, const void *);
-int make_cstr_array_unique(char ***, char **);
-int cstring_extract_from_regex(char ***, const char *, const char *, int, int);
 
 #endif

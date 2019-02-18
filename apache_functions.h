@@ -5,8 +5,6 @@
 #define HEADER_TEXT "### Warning: File is generated automatically.\n###If you edit this file, your settings could be loosed!\n\n"
 
 vector<string> get_all_vhosts();
-char ** get_all_vhosts_c();
-char * get_site_for_vhost(const char *);
 vector<vhost> get_all_vhost_data();
 string get_vhost_entry_string(string vhostName);
 vector<string> get_all_sites();
@@ -25,5 +23,6 @@ bool change_vhost(string sitename, vhost vh);
 bool del_vhost(string sitename, string vhostname);
 bool restart_apache();
 bool reload_apache();
+
 
 #endif

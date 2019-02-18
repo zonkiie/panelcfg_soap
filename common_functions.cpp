@@ -3,23 +3,6 @@
 char *progpath;
 char *progdir;
 
-/// @see https://stackoverflow.com/questions/35390912/proper-way-to-get-file-size-in-c
-int get_filesize(char * filename)
-{
-	int fsize = 0;
-	if(access(filename, F_OK)) // file not found
-		return -1;
-	struct stat buffer;
-	int         status;
-
-	status = stat(filename, &buffer);
-	if(status == 0) {
-	// size of file is in member buffer.st_size;
-		fsize = buffer.st_size;
-	}
-	return fsize;
-}
-
 // From: libzbcl
 /// @see http://www.cs.ecu.edu/karl/4630/sum01/example1.html
 int execvp_fork(string file, vector<string> argv)
@@ -210,27 +193,6 @@ int array_push(char ***target_array, char *str)
 	element_count++;
 	(*target_array)[element_count] = NULL;
 	return(element_count);
-}
-
-/**
-*  Iterate through C array and free all Elements
-*/
-void free_carr(char ***carr)
-{
-	int i = 0;
-	while((*carr)[i] != NULL)
-	{
-		free((*carr)[i]);
-		i++;
-	}
-	free(*carr);
-}
-
-int get_carr_size(char ** carr)
-{
-    int i = 0;
-    for(; carr[i] != NULL; i++);
-    return i;
 }
 
 mode_t get_type_for_path(string path)
@@ -517,55 +479,3 @@ int parse_configstring(const char * line, char * key, char * value)
 	else return s;
 }
 
-/**
- * Comparator function for qsort
- */
-int cmpstringp(const void *p1, const void *p2)
-{
-    /* Die tatsächlichen Argumente dieser Funktion sind »Zeiger auf
-        Zeiger auf char«, strcmp(3)-Argumente sind aber »Zeiger auf
-        char«, daher wird im Folgenden umgewandelt und zurückverfolgt*/
-
-    return strcmp(* (char * const *) p1, * (char * const *) p2);
-}
-
-// makes a sorted array of strings unique
-int make_cstr_array_unique(char *** output_array, char ** input_array)
-{
-    int i;
-    *output_array = (char**)calloc(sizeof(char**), 2);
-    for(i = 0; input_array[i] != NULL; i++)
-    {
-        if(input_array[i + 1] != NULL && !strcmp(input_array[i], input_array[i + 1])) continue;
-        else if(input_array[i + 1] != NULL && strcmp(input_array[i], input_array[i + 1])) array_push(output_array, input_array[i]);
-    }
-    if(i > 0) array_push(output_array, input_array[i - 1]);
-    return i;
-}
-
-/**
- * @returns the number of matches or -1 on error.
- */
-int cstring_extract_from_regex(char *** matches, const char * pattern, const char * text, int max_matches, int flags)
-{
-    *matches = (char**)calloc(sizeof(char**), 2);
-    char *matchtext;
-    regex_t regex;
-    regmatch_t match[max_matches + 1];
-    int regex_result, regex_match_result, i = 1;
-    if((regex_result = regcomp(&regex, pattern, flags))) return -1;
-    if((regex_match_result = regexec(&regex, text, max_matches, match, 0)) == 0) 
-    {
-        for(i = 1; i < max_matches && match[i].rm_so != -1; i++)
-        {
-            //fprintf(stderr, "Text: %s, match[%d].rm_so: %d, match[%d].rm_eo: %d\n", text, i, match[i].rm_so, i, match[i].rm_eo);
-            matchtext = strndupa(text + match[i].rm_so, match[i].rm_eo - match[i].rm_so);
-            if(matchtext != NULL) array_push(matches, matchtext);
-        }
-    }
-    
-    regfree(&regex);
-    return i - 1;
-}
-
-    
