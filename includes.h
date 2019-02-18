@@ -44,6 +44,7 @@ using namespace std;
 #include <zbcl/plain_c/carray-functions.h>
 #include <zbcl/plain_c/cstring-functions.h>
 #include <zbcl/plain_c/capache-functions-ext.h>
+#include <zbcl/plain_c/user-functions.h>
 #include <soapH.h>  // include the generated source code headers
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>

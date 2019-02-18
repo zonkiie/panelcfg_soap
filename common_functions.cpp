@@ -417,60 +417,6 @@ vector<string> getFileList(string path)
 	return(entries);
 }
 
-char* devname_from_procpartitions(int major, int minor)
-{
-	char* procfilename = strdupa("/proc/partitions");
-	char* content = NULL;
-	if(access(procfilename, F_OK)) return NULL;
-	FILE *file = fopen(procfilename, "r");
-	size_t readbytes = 1;
-	if(file == NULL) return NULL;
-	size_t size;
-	int linecount = 0;
-	while((size = getline(&content, &readbytes, file)) > 0)
-	{
-		// Copy content from heap variable content to stack variable cc to get rid of allocated memory
-		char cc[size];
-		strcpy(cc, content);
-		free(content);
-		content = NULL;
-		// now lets skip the first two lines of the file
-		linecount++;
-		if(linecount < 2) continue;
-		int pmajor = -1, pminor = -1;
-		long long blocks;
-		char name[1024];
-		bzero(name, sizeof(name));
-		sscanf(cc, "%d %d %lld %1024s", &pmajor, &pminor, &blocks, name);
-		if(pmajor == major && pminor == minor)
-		{
-			fclose(file);
-			return strdup(name);
-		}
-	}
-	fclose(file);
-	return NULL;
-}
-
-
-/// @see https://stackoverflow.com/questions/26046949/find-the-device-or-mountpoint-of-arbitrary-files-on-linux-using-c
-char* getdev(const char *path)
-{
-	int majorid = -1, minorid = -1;
-	struct stat st;
-	if(stat(path, &st) != 0) return NULL;
-	majorid = major(st.st_dev);
-	minorid = minor(st.st_dev);
-	const char* devdir = "/dev/";
-	char* devname = devname_from_procpartitions(majorid, minorid);
-	size_t slen = strlen(devname) + strlen(devdir) + 1;
-	char* result = (char*)malloc(slen);
-	strcpy(result, devdir);
-	strcat(result, devname);
-	free(devname);
-	return result;
-}
-
 int parse_configstring(const char * line, char * key, char * value)
 {
 	size_t s;

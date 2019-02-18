@@ -2,7 +2,6 @@
 #define __user_functions__
 
 vector<string> getUserList();
-char** getUserListC();
 bool infoUser(int & error_status, string& username, string& homedir, string& shell, string& groupname, int & uid);
 bool infoUser(int & error_status, string& username, userinfo& info);
 bool delUser(string username);

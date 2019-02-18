@@ -6,7 +6,7 @@ GSOAP_ROOT_DIR := /usr/share/gsoap/
 GSOAP_PLUGIN_DIR := $(GSOAP_ROOT_DIR)/plugin
 ALL_CPP_FILES := $(wildcard *.cpp)
 ALL_C_FILES := $(wildcard *.c)
-LDFLAGS := -lgsoap++ -lgsoapssl++ -lpthread -lcrypt -lssl -lcrypto -lboost_filesystem -lboost_iostreams -lboost_signals -lboost_system 
+LDFLAGS := -lgsoap++ -lgsoapssl++ -lpthread -lcrypt -lssl -lcrypto -lboost_filesystem -lboost_iostreams -lboost_signals -lboost_system -lpam
 CXXFLAGS := -std=c++11 -Wall -g -D WITH_IPV6 -DWITH_OPENSSL -I. -I$(OUT_DIR) -I$(GSOAP_ROOT_DIR) -I$(GSOAP_PLUGIN_DIR) -I/usr/include/zbcl
 GENERATED_SOURCE_FILES := $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp
 #GENERATED_SOURCE_FILES := $(wildcard build/*.cpp)
