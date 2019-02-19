@@ -76,7 +76,7 @@ int ns__listSysRootC(struct soap* soap, char** response)
     char* result = NULL;
     int len = 0;
     const char* cargs[] = {"-la", "/", NULL};
-    int state = pexec_to_carr(&result, &len, "ls", cargs);
+    int state = pexec_to_carr2(&result, &len, "ls", cargs);
     *response = soap_strdup(soap, result);
     free(result);
     if(state != 0) return 500;

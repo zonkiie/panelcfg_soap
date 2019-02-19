@@ -6,7 +6,8 @@ GSOAP_ROOT_DIR := /usr/share/gsoap/
 GSOAP_PLUGIN_DIR := $(GSOAP_ROOT_DIR)/plugin
 ALL_CPP_FILES := $(wildcard *.cpp)
 ALL_C_FILES := $(wildcard *.c)
-LDFLAGS := -lgsoap++ -lgsoapssl++ -lpthread -lcrypt -lssl -lcrypto -lboost_filesystem -lboost_iostreams -lboost_signals -lboost_system -lpam
+STATIC_LIBS :=  /usr/lib/zbcl/libzbcl.a /usr/lib/`uname -i`-linux-gnu/libcrypt.a
+LDFLAGS := -lgsoap++ -lgsoapssl++ -lcrypt -lpthread -lssl -lcrypto -lboost_filesystem -lboost_iostreams -lboost_signals -lboost_system -lpam
 CXXFLAGS := -std=c++11 -Wall -g -D WITH_IPV6 -DWITH_OPENSSL -I. -I$(OUT_DIR) -I$(GSOAP_ROOT_DIR) -I$(GSOAP_PLUGIN_DIR) -I/usr/include/zbcl
 GENERATED_SOURCE_FILES := $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp
 #GENERATED_SOURCE_FILES := $(wildcard build/*.cpp)
@@ -19,7 +20,7 @@ all: $(EXECUTABLE)
 #$(EXECUTABLE): $(OUT_DIR) $(ALL_SOURCE_FILES)
 #	g++ $(CXXFLAGS) -o $@ $(ALL_SOURCE_FILES) $(LDFLAGS)
 $(EXECUTABLE): $(ALL_OBJECT_FILES) | $(OUT_DIR)
-	$(CXX) -std=c++11 -o $@ $(ALL_OBJECT_FILES) $(LDFLAGS) /usr/lib/zbcl/libzbcl.a
+	$(CXX) -std=c++11 -o $@ $(ALL_OBJECT_FILES) $(LDFLAGS) $(STATIC_LIBS)
 $(OUT_DIR):
 	mkdir -p $(OUT_DIR)
 $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp: panelsoap.h
