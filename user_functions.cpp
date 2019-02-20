@@ -1,14 +1,5 @@
 #include <includes.h> 
 
-vector<string> getUserList()
-{
-	vector<string> userlist;
-	struct passwd *pwd;
-	while((pwd = getpwent()) != NULL) userlist.push_back(string(pwd->pw_name));
-	endpwent();
-	return userlist;
-}
-
 bool delUser(string username)
 {
 	vector<string> args{"userdel", "-r", username};
@@ -20,34 +11,6 @@ bool changePassword(string username, string password)
 	string enc_password = s_crypt(password, make_sha512_salt());
 	vector<string> args{"usermod", "-p", enc_password, username};
 	return execvp_fork("usermod", args) == 0;
-}
-
-bool checkPassword(int & error_status, string username, string password)
-{
-	error_status = 0;
-	struct spwd *spw = getspnam(username.c_str());
-	if(spw == NULL)
-	{
-		error_status = 404;
-		return false;
-	}
-	return (s_crypt(password, string(spw->sp_pwdp)) == string(spw->sp_pwdp));
-}
-
-bool infoUser(int & error_status, string& username, string& homedir, string& shell, string& groupname, int & uid)
-{
-	struct passwd *pwd = getpwnam(username.c_str());
-	if(pwd == 0)
-	{
-		error_status = 404;
-		return false;
-	}
-	homedir = string(pwd->pw_dir == NULL?"":pwd->pw_dir);
-	shell = string(pwd->pw_shell == NULL?"":pwd->pw_shell);
-	struct group * grp = getgrgid(pwd->pw_gid);
-	groupname = string(grp->gr_name == NULL?"":grp->gr_name);
-	uid = pwd->pw_uid;
-	return true;
 }
 
 bool infoUser(int & error_status, string& username, userinfo& info)
@@ -93,28 +56,6 @@ bool changeShell(string username, string shell)
 	return execvp_fork("usermod", args);
 }
 
-vector<string> getUserGroupMembership(string username)
-{
-	vector<string> result;
-	int ngroups = 1;
-	struct passwd *pwd = getpwnam(username.c_str());
-	gid_t* groups = (gid_t*)malloc(ngroups * sizeof (gid_t));
-	int res = getgrouplist(username.c_str(), pwd->pw_gid, groups, &ngroups);
-	if(res == -1)
-	{
-		groups = (gid_t*)realloc(groups, ngroups * sizeof (gid_t));
-		res = getgrouplist(username.c_str(), pwd->pw_gid, groups, &ngroups);
-		if(res == -1) fprintf(stderr, "Fail on line %d in file %s\n", __LINE__, __FILE__);
-	}
-	for(int i = 0; i < ngroups; i++)
-	{
-		struct group *grp = getgrgid(groups[i]);
-		result.push_back(grp->gr_name);
-	}
-	free(groups);
-	return result;
-}
-
 bool addGroup(string groupname)
 {
 	vector<string> args{"groupadd", groupname};
@@ -134,28 +75,6 @@ bool setGroupMembers(string groupname, vector<string> members)
 	return execvp_fork("gpasswd", args) == 0;
 }
 
-vector<string> getGroupMembers(string groupname)
-{
-	vector<string> result;
-	int i = 0;
-	struct group *grp = getgrnam(groupname.c_str());
-	if(grp->gr_mem != NULL)
-	{
-		while(grp->gr_mem[i] != NULL)
-		{
-			result.push_back(grp->gr_mem[i]);
-			i++;
-		}
-	}
-	struct passwd *pwd;
-	while((pwd = getpwent()) != NULL)
-	{
-		if(pwd->pw_gid == grp->gr_gid && (std::find(result.begin(), result.end(), string(pwd->pw_name)) != result.end()) == false) result.push_back(string(pwd->pw_name));
-	}
-	endpwent();
-	return result;
-}
-
 bool addUserToGroup(string username, string groupname)
 {
 	vector<string> args{"usermod", "-a", "-G", groupname, username};
@@ -170,9 +89,9 @@ bool delUserFromGroup(string username, string groupname)
 
 /// reads the quota from user username.
 /// if filesystem is not given, the device of user's homedir will be used.
-quotadata getUserQuotaData(string username, string filesystem)
+soap_quotadata getUserQuotaData(string username, string filesystem)
 {
-	quotadata result;
+	soap_quotadata result;
 	int error_status = 0;
 	userinfo uinfo;
 	if(!infoUser(error_status, username, uinfo)) return result;
@@ -203,7 +122,7 @@ quotadata getUserQuotaData(string username, string filesystem)
 	return result;
 }
 
-bool setUserQuotaData(quotadata qd)
+bool setUserQuotaData(soap_quotadata qd)
 {
 	userinfo uinfo;
 	int error_status;

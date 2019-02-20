@@ -163,14 +163,14 @@ int ns__setGroupMembers(struct soap* soap, string groupname, vector<string> memb
 	return SOAP_OK;
 }
 
-int ns__getUserQuotaData(struct soap* soap, string username, string filesystem, quotadata& response)
+int ns__getUserQuotaData(struct soap* soap, string username, string filesystem, soap_quotadata& response)
 {
 	if(!check_auth(soap)) return 403;
 	response = getUserQuotaData(username, filesystem);
 	return SOAP_OK;
 }
 
-int ns__setUserQuotaData(struct soap* soap, quotadata qd, bool& response)
+int ns__setUserQuotaData(struct soap* soap, soap_quotadata qd, bool& response)
 {
 	if(!check_auth(soap)) return 403;
 	response = setUserQuotaData(qd);

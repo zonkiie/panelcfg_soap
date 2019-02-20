@@ -45,11 +45,13 @@ using namespace std;
 #include <zbcl/plain_c/cstring-functions.h>
 #include <zbcl/plain_c/capache-functions-ext.h>
 #include <zbcl/plain_c/user-functions.h>
+#include <zbcl/plain_c/time-functions.h>
 #include <zbcl/plain_cpp/free_functions/crypt-functions.hh>
 #include <zbcl/plain_cpp/free_functions/conversion.hh>
 #include <zbcl/plain_cpp/free_functions/exec-functions.hh>
 #include <zbcl/plain_cpp/free_functions/filesystem-functions.hh>
 #include <zbcl/plain_cpp/free_functions/file-functions.hh>
+#include <zbcl/plain_cpp/free_functions/user-admin.hh>
 #include <soapH.h>  // include the generated source code headers
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>

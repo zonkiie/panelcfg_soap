@@ -3,14 +3,6 @@
 char *progpath;
 char *progdir;
 
-bool check_password(string username, string password)
-{
-	struct spwd *spw = getspnam(username.c_str());
-    if(spw == NULL) fprintf(stderr, "Could not get shadow entry!\n");
-	if(spw == NULL) return false;
-	return(s_crypt(password, string(spw->sp_pwdp)) == string(spw->sp_pwdp));
-}
-
 bool check_credentials(struct soap* soap)
 {
 	struct passwd * pwd = getpwnam(soap->userid);
@@ -66,24 +58,6 @@ bool check_auth(struct soap* soap)
 		fprintf(stderr, "No Permission!\n");
 	}
 	return state;
-}
-
-vector<string> getFileList(string path)
-{
-	vector<string> entries;
-	string entry;
-	DIR           *dir_p = NULL;
-	struct dirent *dir_entry_p = NULL;
-	
-	if(NULL == (dir_p = opendir(path.c_str()))) return entries;
-
-	while(NULL != (dir_entry_p = readdir(dir_p)))
-	{
-		entry = string(dir_entry_p->d_name);
-		if((entry != ".") && (entry != "..") && (is_file(path + string("/") + entry))) entries.push_back(entry);
-	}
-	closedir(dir_p);
-	return(entries);
 }
 
 int parse_configstring(const char * line, char * key, char * value)

@@ -76,10 +76,10 @@ int ns__addGroup(std::string groupname, bool& response);
 int ns__delGroup(std::string groupname, bool& response);
 
 //gsoap ns2 service method-action:      getUserQuotaData ""
-int ns__getUserQuotaData(std::string username, std::string filesystem = "", quotadata& response);
+int ns__getUserQuotaData(std::string username, std::string filesystem = "", soap_quotadata& response);
 
 //gsoap ns2 service method-action:      setUserQuotaData ""
-int ns__setUserQuotaData(quotadata qd, bool& response);
+int ns__setUserQuotaData(soap_quotadata qd, bool& response);
 
 //gsoap ns2 service method-action:      getAllVhosts "" 
 int ns__getAllVhosts(std::vector<std::string>& response);

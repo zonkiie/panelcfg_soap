@@ -24,7 +24,7 @@ class userinfo
 	int uid;
 };
 
-class quotadata
+class soap_quotadata
 {
 	std::string device;
 	std::string username;
