@@ -71,7 +71,9 @@ namespace filesys = boost::filesystem;
 namespace ba = boost::algorithm;
 namespace po = boost::program_options;
 
-using namespace plain_cpp::free_functions;
+namespace pf = plain_cpp::free_functions;
+
+using namespace pf;
 
 #include <common_functions.h>
 #include <misc_soap_functions.h>

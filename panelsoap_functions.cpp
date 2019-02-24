@@ -196,7 +196,7 @@ int ns__getAllVhostsC(struct soap* soap, ns__array_string* vhostlist)
 
 int ns__getVHostSiteFile(struct soap* soap, string vhostName, string& response)
 {
-    string filename;
+    string filename = "";
     int start_line;
     bool resp = get_vhost_site_file(filename, start_line, vhostName);
     response = filename + ":" + to_string(start_line);
