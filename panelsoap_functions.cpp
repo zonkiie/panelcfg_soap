@@ -194,6 +194,16 @@ int ns__getAllVhostsC(struct soap* soap, ns__array_string* vhostlist)
     return SOAP_OK;
 }
 
+int ns__getVHostSiteFile(struct soap* soap, string vhostName, string& response)
+{
+    string filename;
+    int start_line;
+    bool resp = get_vhost_site_file(filename, start_line, vhostName);
+    response = filename + ":" + to_string(start_line);
+    if(resp) return SOAP_OK;
+    else return 401;
+}
+
 int ns__getVHostSiteC(struct soap* soap, char * vhostName, char ** response)
 {
 	//if(!check_auth(soap)) return 403;

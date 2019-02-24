@@ -29,7 +29,82 @@ vector<vhost> get_all_vhost_data()
 	return vhosts;
 }
 
+bool get_vhost_site_file(string& filename, int& start_line, string vhost_name)
+{
+	vector<string> args{"-t", "-D", "DUMP_VHOSTS"};
+	string result = pexec_read("/usr/sbin/apache2ctl", args);
+	regex rex_vhost("\\s*port (\\d+) namevhost ([^\\s]+) \\((.+):(\\d+)\\)");
+	regex rex_alias("\\s*alias ([^\\s]+).*");
+	smatch sm;
+	stringstream strs(result);
+	string line, found_vhost_name;
+    int found_port;
+	if(!result.empty())
+	{
+        cerr << "Working on result...\n";
+		while(getline(strs, line, '\n'))
+		{
+			if("VirtualHost configuration:" == line) continue;
+			if(regex_match(line, sm, rex_vhost))
+			{
+				if(sm[1] != "") found_port = atoi(sm[1].str().c_str());
+				found_vhost_name = sm[2], filename = sm[3], start_line = atoi(sm[4].str().c_str());
+                if(vhost_name == found_vhost_name) return true;
+			}
+			if(regex_match(line, sm, rex_alias) && vhost_name == sm[1].str()) return true;
+		}
+	}
+	filename = "";
+    start_line = -1;
+    cerr << "Not found\n";
+	return false;
+}
+
 string get_vhost_entry_string(string vhostName)
+{
+	vector<vhost> vh = get_all_vhost_data();
+	string source("");
+	string entry("");
+	smatch sm;
+	regex vhost_close_tag("\\s*<\\s*/VirtualHost\\s*>");
+	for(vector<vhost>::iterator it = vh.begin() ; it != vh.end(); it++)
+	{
+		if((*it).vhost_name == vhostName || std::find((*it).vhost_aliases.begin(), (*it).vhost_aliases.end(), vhostName) != (*it).vhost_aliases.end())
+		{
+			source = (*it).source_file;
+			break;
+		}
+	}
+	if(!source.empty())
+	{
+		vector<string> res;
+		boost::split(res, source, boost::is_any_of(":"));
+		string filename = res[0];
+		if(res[0] == "" || res[1] == "") goto get_vhost_entry_string_return;
+		int lineno = atoi(res[1].c_str());
+		ifstream ifs(res[0]);
+		int linecnt = 0;
+		string line;
+		// Jump to right line
+		if(lineno > 1) while(getline(ifs, line, '\n') && ++linecnt < lineno - 1);
+		//entry += line + '\n';
+		while(getline(ifs, line, '\n'))
+		{
+			if(regex_match(line, sm, vhost_close_tag))
+			{
+				entry += line + '\n';
+				break;
+			}
+			entry += line + '\n';
+		}
+		ifs.close();
+		
+	}
+get_vhost_entry_string_return:
+	return entry;
+}
+
+string get_vhost_entry_string2(string vhostName)
 {
 	vector<vhost> vh = get_all_vhost_data();
 	string source("");

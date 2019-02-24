@@ -84,6 +84,9 @@ int ns__setUserQuotaData(soap_quotadata qd, bool& response);
 //gsoap ns2 service method-action:      getAllVhosts "" 
 int ns__getAllVhosts(std::vector<std::string>& response);
 
+//gsoap ns2 service method-action:      getVHostSiteFile "" 
+int ns__getVHostSiteFile(std::string vhostName, std::string& response);
+
 //gsoap ns2 service method-action:      getAllVhostsC "" 
 int ns__getAllVhostsC(ns__array_string* vhostlist);
 

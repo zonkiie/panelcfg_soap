@@ -2,6 +2,7 @@
 #define __apache_functions__
 
 vector<vhost> get_all_vhost_data();
+bool get_vhost_site_file(string&, int&, string);
 string get_vhost_entry_string(string vhostName);
 vector<string> get_all_sites();
 string get_site_file(string sitename);
