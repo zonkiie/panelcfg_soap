@@ -69,40 +69,6 @@ bool add_vhost(string sitename, vhost vh)
 	return set_vhost_string(sitename, vh.vhost_name, vhstr);
 }
 
-/// @see https://stackoverflow.com/questions/116038/what-is-the-best-way-to-read-an-entire-file-into-a-stdstring-in-c
-bool set_vhost_string(string sitename, string vhostname, string vhost_string)
-{
-	string current_string = get_vhost_entry_string(vhostname);
-	stringstream site_str("");
-	ifstream ifs(get_site_file(sitename));
-	site_str << ifs.rdbuf();
-	ifs.close();
-	string site_string = site_str.str();
-	site_str.str("");
-	if(current_string != "")
-	{
-		boost::replace_all(site_string, current_string, vhost_string);
-		ba::trim(site_string);
-		site_string += '\n';
-		ofstream ofs(get_site_file(sitename));
-		ofs << site_string;
-		ofs.close();
-		return ofs.good();
-	}
-	else
-	{
-		if(!site_exists(sitename))
-		{
-			add_site(sitename);
-			set_site_status(sitename, true);
-		}
-		ofstream ofs(get_site_file(sitename), ostream::app);
-		ofs << vhost_string;
-		ofs.close();
-		return ofs.good();
-	}
-}
-
 bool change_vhost(string sitename, string vhostname, string documentroot)
 {
 	string vhstr = create_vhost_string(vhostname, documentroot);
