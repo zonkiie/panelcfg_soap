@@ -29,55 +29,6 @@ vector<vhost> get_all_vhost_data()
 	return vhosts;
 }
 
-string get_site_file(string sitename)
-{
-	return string(SITEDIR) + "/" + sitename + ".conf";
-}
-
-vector<string> get_all_sites()
-{
-	vector<string> sites = getFileList(SITEDIR);
-	return sites;
-}
-
-bool site_exists(string sitename)
-{
-	string filename = get_site_file(sitename);
-	if(filesys::exists(filename) && filesys::is_regular_file(filename)) return true;
-	return false;
-}
-
-bool add_site(string sitename)
-{
-	string filename = get_site_file(sitename);
-	ofstream outfile(filename, ios_base::out|ios_base::app);
-	outfile << HEADER_TEXT << endl;
-	outfile.close();
-	return set_site_status(sitename, true) == 0;
-}
-
-bool set_site_status(string sitename, bool status)
-{
-	int res = 0;
-	if(status == true)
-	{
-		vector<string> args{"a2ensize", sitename};
-		res = execvp_fork("a2ensize", args);
-	}
-	else
-	{
-		vector<string> args{"a2dissize", sitename};
-		res = execvp_fork("a2dissize", args);
-	}
-	return res == 0;
-}
-
-bool del_site(string sitename)
-{
-	string filename = get_site_file(sitename);
-	return set_site_status(sitename, false) == true && unlink(filename.c_str()) == 0;
-}
-
 string create_vhost_string(vhost vh)
 {
 	stringstream rstr;
@@ -171,14 +122,3 @@ bool del_vhost(string sitename, string vhostname)
 	return set_vhost_string(sitename, vhostname, "");
 }
 
-bool restart_apache()
-{
-	vector<string> args{"apache2ctl", "restart"};
-	return execvp_fork("apache2ctl", args);
-}
-
-bool reload_apache()
-{
-	vector<string> args{"apache2ctl", "reload"};
-	return execvp_fork("apache2ctl", args);
-}
