@@ -1,8 +1,6 @@
 #ifndef __includes__
 #define __includes__
 
-using namespace std;
-
 #include <alloca.h>
 #include <stddef.h>
 #include <unistd.h>
@@ -28,6 +26,12 @@ using namespace std;
 #include <sys/param.h>
 #include <sys/wait.h>
 #include <sys/time.h>
+
+
+#ifdef __cplusplus
+
+using namespace std;
+
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -40,12 +44,18 @@ using namespace std;
 #include <vector>
 #include <list>
 #include <iterator>
+
+#endif
+
 #include <zbcl/plain_c/cfile-functions.h>
 #include <zbcl/plain_c/carray-functions.h>
 #include <zbcl/plain_c/cstring-functions.h>
 #include <zbcl/plain_c/capache-functions-ext.h>
 #include <zbcl/plain_c/user-functions.h>
 #include <zbcl/plain_c/time-functions.h>
+
+#ifdef __cplusplus
+
 #include <zbcl/plain_cpp/free_functions/crypt-functions.hh>
 #include <zbcl/plain_cpp/free_functions/conversion.hh>
 #include <zbcl/plain_cpp/free_functions/exec-functions.hh>
@@ -53,7 +63,9 @@ using namespace std;
 #include <zbcl/plain_cpp/free_functions/file-functions.hh>
 #include <zbcl/plain_cpp/free_functions/user-admin.hh>
 #include <zbcl/plain_cpp/free_functions/apache-functions-ext.hh>
+
 #include <soapH.h>  // include the generated source code headers
+
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
@@ -80,6 +92,9 @@ using namespace pf;
 #include <apache_functions.h>
 #include <user_functions.h>
 #include <soap_ssl_helpers.h>
+
+
+#endif
 
 const int REGEX_FLAGS = REG_EXTENDED|REG_ICASE; //|REG_NEWLINE;
 

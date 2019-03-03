@@ -4,7 +4,7 @@
 
 //#import "wsse.h"
 #import "stlvector.h"
-#import "types.h"
+#import "cpptypes.h"
 
 //gsoap ns2 schema namespace:   urn:ns
 //gsoap ns2 schema form:        unqualified

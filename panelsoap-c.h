@@ -2,6 +2,8 @@
 #ifndef __panelsoap_c__
 #define __panelsoap_c__
 
+#import "ctypes.h"
+
 //gsoap ns2 service method-action:      getusersC "" 
 int ns__getusersC(ns__array_string* userlist);
 
