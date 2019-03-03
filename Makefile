@@ -17,7 +17,7 @@ GENERATED_SOURCE_FILES := $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp
 ALL_SOURCE_FILES := $(ALL_CPP_FILES) $(ALL_C_FILES) $(GENERATED_SOURCE_FILES)
 #ALL_OBJECT_FILES := $(addprefix $(OUT_DIR)/, $(ALL_CPP_FILES:.cpp=.o))
 #ALL_OBJECT_FILES := $(ALL_SOURCE_FILES:.cpp=.o)
-ALL_OBJECT_FILES := $(ALL_CPP_FILES:%.cpp=$(OUT_DIR)/%.o) $(ALL_C_FILES:%.c=$(OUT_DIR)/%.o) $(GENERATED_SOURCE_FILES:.cpp=.o)
+ALL_OBJECT_FILES := $(ALL_CPP_FILES:%.cpp=$(OUT_DIR)/%.cpp.o) $(ALL_C_FILES:%.c=$(OUT_DIR)/%.c.o) $(GENERATED_SOURCE_FILES:.cpp=.o)
 #wsseapi.o
 all: $(EXECUTABLE)
 #$(EXECUTABLE): $(OUT_DIR) $(ALL_SOURCE_FILES)
@@ -29,9 +29,9 @@ $(OUT_DIR):
 $(OUT_DIR)/soapC.cpp $(OUT_DIR)/soapServer.cpp: panelsoap.h
 	soapcpp2 -2 -b -x -SL -d$(OUT_DIR) -I/usr/share/gsoap/import -c++11 $<
 $(OUT_DIR)/wsseapi.o: $(GSOAP_PLUGIN_DIR)/wsseapi.cpp
-$(OUT_DIR)/%.o: %.cpp | $(OUT_DIR)
+$(OUT_DIR)/%.cpp.o: %.cpp | $(OUT_DIR)
 	$(CXX) -c $(CXXFLAGS) $< -o $@
-$(OUT_DIR)/%.o: %.c | $(OUT_DIR)
+$(OUT_DIR)/%.c.o: %.c | $(OUT_DIR)
 	$(CC) -c $(CFLAGS) $< -o $@
 $(ALL_OBJECT_FILES): $(ALL_SOURCE_FILES) | $(OUT_DIR)
 mrproper: clean
