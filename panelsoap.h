@@ -17,17 +17,13 @@
 //gsoap ns2 service namespace:  urn:panelsoap
 //gsoap ns2 service transport:  http://schemas.xmlsoap.org/soap/http
 
+#import "panelsoap-c.h"
+
 //gsoap ns2 service method-action:      getusers "" 
 int ns__getusers(std::vector<std::string>& userlist);
 
-//gsoap ns2 service method-action:      getusersC "" 
-int ns__getusersC(ns__array_string* userlist);
-
 //gsoap ns2 service method-action:      soapinfo "" 
 int ns__soapinfo(std::string& response);
-
-//gsoap ns2 service method-action:      helloC "" 
-int ns__helloC(ns__array_string* arr);
 
 //gsoap ns2 service method-action:      infoUser "" 
 int ns__infoUser(std::string username, userinfo& uinfo);
@@ -40,9 +36,6 @@ int ns__checkPassword(std::string username, std::string password, bool& response
 
 //gsoap ns2 service method-action:      listSysRoot "" 
 int ns__listSysRoot(std::string& response);
-
-//gsoap ns2 service method-action:      listSysRootC "" 
-int ns__listSysRootC(char** response);
 
 //gsoap ns2 service method-action:      addUser "" 
 int ns__addUser(std::string username, std::string password, std::string homedir = "", std::string shell = "", std::string groupname = "", bool& response);
@@ -86,12 +79,6 @@ int ns__getAllVhosts(std::vector<std::string>& response);
 
 //gsoap ns2 service method-action:      getVHostSiteFile "" 
 int ns__getVHostSiteFile(std::string vhostName, std::string& response);
-
-//gsoap ns2 service method-action:      getAllVhostsC "" 
-int ns__getAllVhostsC(ns__array_string* vhostlist);
-
-//gsoap ns2 service method-action:      getVHostSiteC "" 
-int ns__getVHostSiteC(char * vhostName, char ** response);
 
 //gsoap ns2 service method-action:      getAllVhostData "" 
 int ns__getAllVhostData(std::vector<vhost>& response);
