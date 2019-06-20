@@ -47,10 +47,10 @@ using namespace std;
 
 #endif
 
-#include <zbcl/plain_c/cfile-functions.h>
-#include <zbcl/plain_c/carray-functions.h>
-#include <zbcl/plain_c/cstring-functions.h>
-#include <zbcl/plain_c/capache-functions-ext.h>
+#include <zbcl/plain_c/file-functions.h>
+#include <zbcl/plain_c/array-functions.h>
+#include <zbcl/plain_c/string-functions.h>
+#include <zbcl/plain_c/apache-functions-ext.h>
 #include <zbcl/plain_c/user-functions.h>
 #include <zbcl/plain_c/time-functions.h>
 
