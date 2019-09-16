@@ -88,6 +88,7 @@ int start_mt_queue(int argc, char **argv)
 				{"dh", required_argument, 0, 0},
 				{"randfile", required_argument, 0, 0},
 				{"serverid", required_argument, 0, 0},
+				{"authrealm", required_argument, 0, 0},
 				{"configfile", required_argument, 0, 0},
 				{0, 0, 0, 0}
 			};
@@ -107,6 +108,7 @@ int start_mt_queue(int argc, char **argv)
 					if(!strcmp(oname, "dh")) dh = strdupa(optarg);
 					if(!strcmp(oname, "randfile")) randfile = strdupa(optarg);
 					if(!strcmp(oname, "serverid")) serverid = strdupa(optarg);
+					if(!strcmp(oname, "authrealm")) soap.authrealm = strdupa(optarg);
 					if(!strcmp(oname, "configfile")) configfile = strdupa(optarg);
 					break;
 				}
@@ -142,6 +144,7 @@ int start_mt_queue(int argc, char **argv)
 			puts("--randfile=<randfile>");
 			puts("--serverid=<serverid>");
 			puts("--configfile=<configfile>, -c=<configfile>");
+			puts("--authrealm=<authrealm>");
 			puts("--dump-config");
 			exit(0);
 		}
@@ -171,6 +174,7 @@ int start_mt_queue(int argc, char **argv)
 						if(!strcmp(key, "dh") && dh == NULL) dh = strdupa(value);
 						if(!strcmp(key, "randfile") && randfile == NULL) randfile = strdupa(value);
 						if(!strcmp(key, "serverid") && serverid == NULL) serverid = strdupa(value);
+						if(!strcmp(key, "authrealm") && serverid == NULL) soap.authrealm = strdupa(value);
 						
 					}
 					free(line);
@@ -193,6 +197,7 @@ int start_mt_queue(int argc, char **argv)
 			printf("dh: %s\n", dh);
 			printf("randfile: %s\n", randfile);
 			printf("serverid: %s\n", serverid);
+			printf("authrealm: %s\n", soap.authrealm);
 			exit(0);
 		}
 		
